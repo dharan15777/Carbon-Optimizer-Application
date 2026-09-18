@@ -270,8 +270,11 @@ Carbonwise-Application/
 │   └── pubspec.yaml                                      # Flutter project dependencies & asset manifest
 ├── frontend/
 │   ├── app.js                                            # Web dashboard JavaScript logic
+│   ├── engine.js                                         # Industrial Carbon OS optimization engine & solvers
 │   ├── index.html                                        # Web dashboard layout
-│   └── styles.css                                        # Web dashboard CSS styles
+│   ├── industrial-ui.js                                  # Industrial UI controllers and interactive widgets
+│   ├── industrial.css                                    # Industrial Carbon OS theme and responsive styles
+│   └── styles.css                                        # Core web dashboard CSS styles
 ├── scripts/
 │   └── start-dev.sh                                      # Developer setup script to launch all microservices
 ├── .gitignore                                            # Git version control exclusions
@@ -336,11 +339,13 @@ Hardware-level telemetry capture and actuator control.
 
 ---
 
-### 🌐 frontend (Web Dashboard)
-Lightweight web dashboard providing an instant web interface for desktop monitoring.
-- **`index.html`**: Semantic HTML5 dashboard layout.
-- **`styles.css`**: Responsive styling with dark mode and eco-themed accents.
-- **`app.js`**: REST API client fetching live grid metrics and rendering charts.
+### 🌐 frontend (Web Dashboard & Industrial Carbon OS)
+Interactive web monitoring dashboard and Industrial Carbon OS for real-time tracking, optimization, and analytics.
+- **`index.html`**: Semantic HTML5 dashboard and industrial layout.
+- **`styles.css`** & **`industrial.css`**: Core design system, responsive layouts, and industrial dashboard theme.
+- **`app.js`**: REST API client fetching live grid metrics, rendering charts, and handling device control.
+- **`engine.js`**: Optimization engine and carbon solvers for load scheduling and peak shaving.
+- **`industrial-ui.js`**: Industrial Carbon OS UI widgets, real PDF generation, and GIS overlays.
 
 ---
 

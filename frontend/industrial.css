@@ -1,0 +1,76 @@
+/* CarbonWise Industrial — layout extensions */
+.app-shell { display: flex; min-height: calc(100vh - 72px); }
+.sidebar {
+  width: 240px; flex-shrink: 0; background: var(--bg-surface);
+  border-right: 1px solid var(--border); padding: 16px 12px;
+  display: none; flex-direction: column; gap: 4px;
+}
+@media (min-width: 1100px) {
+  .sidebar { display: flex; }
+  .nav-center { display: none; }
+}
+.side-link {
+  background: transparent; border: none; color: var(--text-secondary);
+  text-align: left; padding: 10px 12px; border-radius: 10px;
+  cursor: pointer; font-weight: 600; font-size: 0.88rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.side-link:hover { background: var(--bg-card); color: var(--text-primary); }
+.side-link.active { background: rgba(0,245,118,0.12); color: var(--primary); }
+.mode-switch {
+  display: flex; gap: 6px; background: var(--bg-main); padding: 4px;
+  border-radius: 999px; border: 1px solid var(--border); margin-bottom: 12px;
+}
+.mode-switch button {
+  flex: 1; border: none; background: transparent; color: var(--text-muted);
+  padding: 6px; border-radius: 999px; font-weight: 700; font-size: 0.75rem; cursor: pointer;
+}
+.mode-switch button.active { background: var(--primary); color: #04120a; }
+.demo-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,184,0,0.12); color: var(--yellow);
+  border: 1px solid rgba(255,184,0,0.3); padding: 3px 10px;
+  border-radius: 999px; font-size: 0.7rem; font-weight: 700;
+}
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.source-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; cursor: pointer; }
+.source-bar { flex: 1; height: 8px; background: #1a2438; border-radius: 99px; overflow: hidden; }
+.source-bar > i { display: block; height: 100%; background: var(--primary); }
+.hotspot { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 12px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+.hotspot.high { border-left: 3px solid var(--red); }
+.hotspot.medium { border-left: 3px solid var(--yellow); }
+.action-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 10px; }
+.action-card h4 { margin-bottom: 4px; }
+.opt-hero {
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 20px;
+}
+@media (max-width: 900px) { .opt-hero { grid-template-columns: 1fr; } }
+.before-after { display: flex; gap: 20px; align-items: center; justify-content: space-around; padding: 20px; }
+.ba-num { font-size: 2rem; font-family: var(--font-mono); font-weight: 800; }
+.roadmap-col { flex: 1; min-width: 220px; }
+.skel { background: linear-gradient(90deg,#1a2438 25%,#24324f 50%,#1a2438 75%); background-size: 200% 100%; animation: sk 1.2s infinite; border-radius: 8px; height: 18px; }
+@keyframes sk { to { background-position: -200% 0; } }
+.map-fallback {
+  height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; background: #0b1325; border-radius: 14px; border: 1px dashed var(--border);
+}
+.bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+  background: rgba(14,21,38,0.95); border-top: 1px solid var(--border);
+  padding: 8px 6px 12px; justify-content: space-around;
+}
+.bottom-nav button {
+  background: none; border: none; color: var(--text-muted); font-size: 0.65rem;
+  display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; font-weight: 600;
+}
+.bottom-nav button i { font-size: 1.05rem; }
+.bottom-nav button.active { color: var(--primary); }
+@media (max-width: 1099px) {
+  .bottom-nav { display: flex; }
+  .main-viewport { padding-bottom: 88px; }
+}
+.profile-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 700px) { .profile-form { grid-template-columns: 1fr; } }
+.donut-wrap { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.why-next { font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px; }
+.budget-input { font-size: 1.2rem; font-family: var(--font-mono); }
