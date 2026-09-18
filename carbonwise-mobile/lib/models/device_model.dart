@@ -9,8 +9,22 @@ class Device {
   final String? scheduleId;
   final DateTime createdAt;
   final String? customLocation;
+  final double? currentPower;
+  final double? energyToday;
+  final double? carbonKg;
+  final double? temperature;
+  final double? vibration;
+  final double? runtimeHours;
+  final String? riskLevel;
 
   double get power => powerRating;
+  double get liveKw => currentPower ?? (isActive ? powerRating * 0.78 : 0.0);
+  double get liveKwh => energyToday ?? (isActive ? powerRating * 5.2 : 0.0);
+  double get liveCarbon => carbonKg ?? (liveKwh * 0.38);
+  double get temp => temperature ?? (isActive ? 58.4 : 28.0);
+  double get vib => vibration ?? (isActive ? 2.4 : 0.0);
+  double get runtime => runtimeHours ?? (isActive ? 6.4 : 0.0);
+  String get risk => riskLevel ?? (temp > 75 || vib > 4.0 ? 'HIGH' : 'LOW');
   bool get isOn => isActive;
   String get status => isActive ? 'ONLINE' : 'OFFLINE';
   String get location => customLocation ?? 'Sector 3 • Bay A';
@@ -25,6 +39,13 @@ class Device {
     this.isScheduled = false,
     this.scheduleId,
     this.customLocation,
+    this.currentPower,
+    this.energyToday,
+    this.carbonKg,
+    this.temperature,
+    this.vibration,
+    this.runtimeHours,
+    this.riskLevel,
     required this.createdAt,
   });
 

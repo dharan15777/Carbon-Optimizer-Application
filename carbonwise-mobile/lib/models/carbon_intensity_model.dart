@@ -6,6 +6,7 @@ class CarbonIntensity {
   final double coalPercent;
   final String status;
   final DateTime timestamp;
+  final double? demand;
 
   CarbonIntensity({
     required this.intensity,
@@ -15,6 +16,7 @@ class CarbonIntensity {
     required this.coalPercent,
     required this.status,
     required this.timestamp,
+    this.demand,
   });
 
   double get renewablePercent => solarWindPercent + hydroPercent;

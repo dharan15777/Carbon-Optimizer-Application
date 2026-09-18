@@ -409,14 +409,23 @@
                             <button class="map-btn active" id="btn-layer-all" onclick="filterMapLayer('ALL')">
                                 <i class="fas fa-layer-group"></i> All Layers
                             </button>
-                            <button class="map-btn" id="btn-layer-heat" onclick="filterMapLayer('HEATMAP')">
-                                <i class="fas fa-fire-flame-curved text-green"></i> Carbon Heatmap
+                            <button class="map-btn" id="btn-layer-devices" onclick="filterMapLayer('DEVICES')">
+                                <i class="fas fa-industry text-green"></i> Machines (12)
                             </button>
                             <button class="map-btn" id="btn-layer-sensors" onclick="filterMapLayer('SENSORS')">
-                                <i class="fas fa-microchip text-cyan"></i> IoT Sensors
+                                <i class="fas fa-microchip text-cyan"></i> Sensors (12)
+                            </button>
+                            <button class="map-btn" id="btn-layer-heat" onclick="filterMapLayer('HEATMAP')">
+                                <i class="fas fa-fire-flame-curved text-yellow"></i> Heatmap
+                            </button>
+                            <button class="map-btn" id="btn-layer-pollution" onclick="filterMapLayer('POLLUTION')">
+                                <i class="fas fa-smog text-yellow"></i> Pollution
                             </button>
                             <button class="map-btn" id="btn-layer-risk" onclick="filterMapLayer('RISK')">
-                                <i class="fas fa-triangle-exclamation text-red"></i> High Risk Zones
+                                <i class="fas fa-triangle-exclamation text-red"></i> Risk Zones
+                            </button>
+                            <button class="map-btn" id="btn-layer-hotspots" onclick="filterMapLayer('HOTSPOTS')">
+                                <i class="fas fa-bolt text-cyan"></i> Hotspots
                             </button>
                         </div>
                         <div class="map-legend-inline">
@@ -865,6 +874,7 @@
     <script src="lazy-loader.js"></script>
     <script src="api-client.js"></script>
     <script src="engine.js"></script>
+    <script src="industrial-data.js"></script>
     <script src="app.js"></script>
     <script src="industrial-ui.js"></script>
 </body>

@@ -13,15 +13,7 @@ class CarbonRepository {
         return CarbonIntensity.fromJson(Map<String, dynamic>.from(response.data as Map));
       }
     } catch (_) {}
-    return CarbonIntensity(
-      intensity: 118.0,
-      timestamp: DateTime.now(),
-      solarWindPercent: 64.0,
-      hydroPercent: 12.0,
-      gasPercent: 14.0,
-      coalPercent: 10.0,
-      status: 'CLEAN',
-    );
+    return GridSimulationService.instance.current;
   }
 
   Future<List<CarbonIntensity>> fetchCarbonHistory({int days = 30}) async {
@@ -34,18 +26,23 @@ class CarbonRepository {
         return (response.data as List).map((e) => CarbonIntensity.fromJson(e)).toList();
       }
     } catch (_) {}
+    final simRecords = GridSimulationService.instance.records;
+    if (simRecords.isNotEmpty) {
+      return simRecords.take(days).toList();
+    }
     final now = DateTime.now();
     return List.generate(7, (i) {
       final dt = now.subtract(Duration(days: 6 - i));
-      final val = [145.0, 132.0, 110.0, 168.0, 125.0, 118.0, 105.0][i % 7];
+      final val = [345.0, 317.0, 336.0, 385.0, 440.0, 580.0, 320.0][i % 7];
       return CarbonIntensity(
         intensity: val,
         timestamp: dt,
-        solarWindPercent: 60.0 + (i * 2),
-        hydroPercent: 15.0,
+        solarWindPercent: 55.0,
+        hydroPercent: 10.0,
         gasPercent: 15.0,
-        coalPercent: 10.0,
-        status: val < 150 ? 'CLEAN' : 'MODERATE',
+        coalPercent: 20.0,
+        status: val < 350 ? 'CLEAN' : 'NORMAL',
+        demand: 4300.0,
       );
     });
   }

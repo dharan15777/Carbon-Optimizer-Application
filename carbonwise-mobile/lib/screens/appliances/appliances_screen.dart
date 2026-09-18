@@ -198,8 +198,24 @@ class _AppliancesScreenState extends State<AppliancesScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildCardMetric('Power Draw', '${dev.power} W'),
-                _buildCardMetric('Hourly Impact', '${(dev.power * 0.00082).toStringAsFixed(2)} kg CO₂'),
+                _buildCardMetric('Live Power', '${dev.liveKw.toStringAsFixed(1)} kW'),
+                _buildCardMetric('Energy Today', '${dev.liveKwh.toStringAsFixed(1)} kWh'),
+                _buildCardMetric('Temp / Vib', '${dev.temp.toStringAsFixed(0)}°C • ${dev.vib.toStringAsFixed(1)}g'),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: (dev.risk == 'HIGH' ? Colors.redAccent : dev.risk == 'MEDIUM' ? AppTheme.primaryYellow : AppTheme.primaryGreen).withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    dev.risk,
+                    style: TextStyle(
+                      color: dev.risk == 'HIGH' ? Colors.redAccent : dev.risk == 'MEDIUM' ? AppTheme.primaryYellow : AppTheme.primaryGreen,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 Row(
                   children: [
                     Switch(
@@ -210,7 +226,7 @@ class _AppliancesScreenState extends State<AppliancesScreen> {
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete_outline, size: 20, color: Colors.white38),
+                      icon: const Icon(Icons.delete_outline, size: 18, color: Colors.white38),
                       onPressed: () => _confirmDelete(dev),
                     ),
                   ],
@@ -227,9 +243,9 @@ class _AppliancesScreenState extends State<AppliancesScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
+        Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 1),
-        Text(label, style: const TextStyle(fontSize: 9.5, color: Colors.white38)),
+        Text(label, style: const TextStyle(fontSize: 9, color: Colors.white38)),
       ],
     );
   }
@@ -414,10 +430,15 @@ class _AppliancesScreenState extends State<AppliancesScreen> {
             const SizedBox(height: 16),
             const Divider(height: 1, color: Colors.white10),
             const SizedBox(height: 12),
-            _buildDetailRow('Active Power Rating', '${dev.power} Watts'),
-            _buildDetailRow('Estimated Hourly Carbon Impact', '${(dev.power * 0.00082).toStringAsFixed(2)} kg CO₂'),
+            _buildDetailRow('Active Power Draw', '${dev.liveKw.toStringAsFixed(1)} kW'),
+            _buildDetailRow('Energy Consumed Today', '${dev.liveKwh.toStringAsFixed(1)} kWh'),
+            _buildDetailRow('Calculated Carbon Impact', '${dev.liveCarbon.toStringAsFixed(2)} kg CO₂'),
+            _buildDetailRow('Core Temperature', '${dev.temp.toStringAsFixed(1)} °C'),
+            _buildDetailRow('Vibration Amplitude', '${dev.vib.toStringAsFixed(2)} mm/s'),
+            _buildDetailRow('Continuous Runtime', '${dev.runtime.toStringAsFixed(1)} hrs'),
+            _buildDetailRow('Risk Assessment', dev.risk),
             _buildDetailRow('Telemetry Protocol', 'MQTT / Sparkplug B (Port 8883)'),
-            _buildDetailRow('Last Heartbeat', '1.2s ago (Packet #12894)'),
+            _buildDetailRow('Last Heartbeat', 'Live (15s sync interval)'),
             _buildDetailRow('Energy Optimization State', 'Grid Load-Aware Active'),
             const SizedBox(height: 20),
             SizedBox(

@@ -480,77 +480,166 @@ function renderMapLayers() {
     if (!mapMarkersGroup) return;
     mapMarkersGroup.clearLayers();
 
-    // 1. Home Marker
-    const homeIcon = L.divIcon({
-        className: "custom-map-icon",
-        html: `<div style="background: #00f576; color: #000; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 0 12px #00f576;"><i class="fas fa-home"></i></div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-    });
-    L.marker([13.0827, 80.2707], { icon: homeIcon })
-        .addTo(mapMarkersGroup)
-        .bindPopup("<strong>Your Smart Home</strong><br>Carbon Intensity: 118 gCO₂/kWh (Clean)");
+    const indData = window.CWIndustrialData;
+    const devices = indData ? indData.devices.getAll() : [];
+    const sensors = indData ? indData.sensors.getAll() : [];
 
-    // 2. Heatmaps
-    if (currentMapFilter === "ALL" || currentMapFilter === "HEATMAP") {
-        state.heatmaps.forEach(pt => {
-            let color = "#00f576";
-            if (pt.intensity >= 300) color = "#ff3838";
-            else if (pt.intensity >= 150) color = "#ffb800";
+    // Center map on Industrial Campus if in Industrial mode
+    if (userLeafletMap && typeof appMode !== "undefined" && appMode === "INDUSTRIAL") {
+        userLeafletMap.setView([13.0102, 80.2155], 16);
+    }
 
-            L.circle([pt.lat, pt.lng], {
-                radius: pt.radius,
-                color: color,
-                fillColor: color,
-                fillOpacity: 0.28,
-                weight: 2
-            }).addTo(mapMarkersGroup).bindPopup(`<strong>${pt.label}</strong><br>Carbon: ${pt.intensity} gCO₂/kWh`);
+    // 1. Industrial Devices Layer (12 Machines)
+    if (currentMapFilter === "ALL" || currentMapFilter === "DEVICES" || currentMapFilter === "HOTSPOTS") {
+        devices.forEach(d => {
+            if (currentMapFilter === "HOTSPOTS" && (d.powerRating < 25 || d.status === "OFFLINE")) return;
+            const isOnline = d.status === "ONLINE";
+            const isWarn = d.status === "WARNING" || d.riskLevel === "HIGH";
+            const color = !isOnline ? "#94a3b8" : isWarn ? "#ffb800" : "#00f576";
+            
+            const devIcon = L.divIcon({
+                className: "custom-device-icon",
+                html: `<div style="background: ${color}; color: #000; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; box-shadow: 0 0 10px ${color};"><i class="fas fa-industry"></i></div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+
+            const marker = L.marker(d.coords || [13.0102, 80.2155], { icon: devIcon }).addTo(mapMarkersGroup);
+            marker.bindPopup(`
+                <div style="font-family:'Outfit',sans-serif;color:#0f172a;min-width:180px">
+                    <strong style="font-size:14px;color:#0f172a">${d.name} (${d.id})</strong><br>
+                    <span style="font-size:11px;color:#64748b">${d.type} • ${d.location}</span>
+                    <hr style="margin:6px 0;border:0;border-top:1px solid #e2e8f0">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">
+                        <div><strong>Load:</strong> ${d.currentPower} kW</div>
+                        <div><strong>Temp:</strong> ${d.temp}°C</div>
+                        <div><strong>Vib:</strong> ${d.vibration} mm/s</div>
+                        <div><strong>CO₂:</strong> ${d.carbonKg || (d.currentPower * 0.8).toFixed(1)} kg</div>
+                    </div>
+                    <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center">
+                        <span style="font-size:10px;padding:2px 6px;border-radius:4px;background:${isOnline ? '#dcfce7;color:#15803d' : '#f1f5f9;color:#64748b'};font-weight:600">${d.status}</span>
+                        <span style="font-size:10px;padding:2px 6px;border-radius:4px;background:${isWarn ? '#fef08a;color:#854d0e' : '#e0f2fe;color:#0369a1'};font-weight:600">Risk: ${d.riskLevel}</span>
+                    </div>
+                </div>
+            `);
+            marker.on("click", () => {
+                if (typeof openDeviceDetail === "function") {
+                    openDeviceDetail(d);
+                }
+            });
         });
     }
 
-    // 3. IoT Sensors
-    if (currentMapFilter === "ALL" || currentMapFilter === "SENSORS") {
-        state.sensors.forEach(s => {
-            const isOnline = s.status === "ONLINE";
+    // 2. Industrial IoT Sensors Layer (12 Sensors)
+    if (currentMapFilter === "ALL" || currentMapFilter === "SENSORS" || currentMapFilter === "POLLUTION") {
+        sensors.forEach(s => {
+            if (currentMapFilter === "POLLUTION" && !["PM2.5", "PM10", "CO₂ Concentration", "Air Quality Index"].includes(s.type)) return;
+            const isWarn = s.status === "WARNING" || s.risk === "HIGH";
+            const color = isWarn ? "#ff3838" : "#00e5ff";
+
             const sensorIcon = L.divIcon({
                 className: "custom-sensor-icon",
-                html: `<div style="background: ${isOnline ? "#00e5ff" : "#ff3838"}; color: #000; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 0 8px ${isOnline ? "#00e5ff" : "#ff3838"};"><i class="fas fa-microchip"></i></div>`,
-                iconSize: [26, 26],
-                iconAnchor: [13, 13]
+                html: `<div style="background: ${color}; color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; box-shadow: 0 0 8px ${color};"><i class="fas fa-microchip"></i></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
             });
 
-            const marker = L.marker([s.lat, s.lng], { icon: sensorIcon }).addTo(mapMarkersGroup);
-            marker.bindPopup(`<strong>${s.name} (${s.id})</strong><br>CO₂: ${s.co2} ppm • PM2.5: ${s.pm25} µg/m³<br>Temp: ${s.temp}°C • Status: ${s.status}`);
+            const marker = L.marker(s.coords || [13.0103, 80.2156], { icon: sensorIcon }).addTo(mapMarkersGroup);
+            marker.bindPopup(`
+                <div style="font-family:'Outfit',sans-serif;color:#0f172a;min-width:160px">
+                    <strong style="font-size:13px">${s.id} · ${s.type}</strong><br>
+                    <span style="font-size:11px;color:#64748b">${s.location}</span>
+                    <hr style="margin:4px 0;border:0;border-top:1px solid #e2e8f0">
+                    <div style="font-size:12px;margin-bottom:4px"><strong>Reading:</strong> <span style="color:${isWarn ? '#dc2626' : '#0284c7'};font-weight:bold">${s.value} ${s.unit}</span></div>
+                    <div><span style="font-size:10px;padding:2px 6px;border-radius:4px;background:${isWarn ? '#fee2e2;color:#b91c1c' : '#e0f2fe;color:#0369a1'};font-weight:600">${s.status} (${s.risk} RISK)</span></div>
+                </div>
+            `);
             marker.on("click", () => updateSensorTelemetryBox(s));
         });
+    }
+
+    // 3. Heatmap Layer (Weighted by Machine Energy & Emissions)
+    if (currentMapFilter === "ALL" || currentMapFilter === "HEATMAP") {
+        devices.forEach(d => {
+            if (d.status === "OFFLINE") return;
+            const radius = Math.max(30, Math.min(120, d.currentPower * 1.5));
+            const color = d.currentPower > 60 ? "#ff3838" : d.currentPower > 25 ? "#ffb800" : "#00f576";
+
+            L.circle(d.coords, {
+                radius: radius,
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.22,
+                weight: 1.5
+            }).addTo(mapMarkersGroup).bindPopup(`<strong>Thermal & Carbon Heatmap</strong><br>${d.name}<br>Active Load: ${d.currentPower} kW • ${d.temp}°C`);
+        });
+    }
+
+    // 4. Industrial Risk Zones
+    if (currentMapFilter === "ALL" || currentMapFilter === "RISK") {
+        // Boiler Area Risk Zone
+        L.circle([13.0080, 80.2150], {
+            radius: 80,
+            color: "#ff3838",
+            fillColor: "#ff3838",
+            fillOpacity: 0.28,
+            weight: 2,
+            dashArray: "4, 6"
+        }).addTo(mapMarkersGroup).bindPopup(`
+            <div style="font-family:'Outfit',sans-serif">
+                <strong style="color:#dc2626">HIGH RISK ZONE • Thermal Utility Area</strong><br>
+                <small>Boiler BLR-009 surface temp 115°C & PM2.5 84 µg/m³</small><br>
+                <strong>Action:</strong> Inspect auxiliary combustion seals & reduce thermal load.
+            </div>
+        `);
+
+        // Furnace Hall Medium Risk Zone
+        L.circle([13.0075, 80.2165], {
+            radius: 95,
+            color: "#ffb800",
+            fillColor: "#ffb800",
+            fillOpacity: 0.24,
+            weight: 2,
+            dashArray: "4, 6"
+        }).addTo(mapMarkersGroup).bindPopup(`
+            <div style="font-family:'Outfit',sans-serif">
+                <strong style="color:#d97706">MEDIUM RISK ZONE • Heat Treatment Hall</strong><br>
+                <small>Continuous Furnace FRN-010 operating at 840°C, CO₂ 620 ppm</small><br>
+                <strong>Action:</strong> Check ventilation ducting & shift idle preheat to clean window.
+            </div>
+        `);
     }
 }
 
 function updateSensorTelemetryBox(sensor) {
-    document.getElementById("selected-sensor-title").innerText = `${sensor.name} (${sensor.id})`;
+    document.getElementById("selected-sensor-title").innerText = `${sensor.type} (${sensor.id}) — ${sensor.location}`;
     document.getElementById("selected-sensor-status").innerText = sensor.status;
-    document.getElementById("selected-sensor-status").className = `badge ${sensor.status === "ONLINE" ? "clean" : "red"}`;
-    document.getElementById("box-co2").innerText = `${sensor.co2} ppm`;
-    document.getElementById("box-pm25").innerText = `${sensor.pm25} µg/m³`;
-    document.getElementById("box-temp").innerText = `${sensor.temp} °C`;
-    document.getElementById("box-intensity").innerText = "118 gCO₂";
-    showToast(`Loaded live telemetry from ${sensor.name}`, "info");
+    document.getElementById("selected-sensor-status").className = `badge ${sensor.status === "NORMAL" ? "clean" : "red"}`;
+    document.getElementById("box-co2").innerText = `${sensor.value} ${sensor.unit}`;
+    document.getElementById("box-pm25").innerText = sensor.risk + " RISK";
+    document.getElementById("box-temp").innerText = "Status: " + sensor.status;
+    const grid = window.CWIndustrialData ? window.CWIndustrialData.grid.getCurrent() : null;
+    document.getElementById("box-intensity").innerText = grid ? `${grid.intensity} gCO₂` : "320 gCO₂";
+    showToast(`Loaded live telemetry from ${sensor.id} (${sensor.type})`, "info");
 }
 
 function filterMapLayer(layer) {
     currentMapFilter = layer;
     document.querySelectorAll(".map-btn").forEach(b => b.classList.remove("active"));
     if (layer === "ALL") document.getElementById("btn-layer-all")?.classList.add("active");
-    if (layer === "HEATMAP") document.getElementById("btn-layer-heat")?.classList.add("active");
+    if (layer === "DEVICES") document.getElementById("btn-layer-devices")?.classList.add("active");
     if (layer === "SENSORS") document.getElementById("btn-layer-sensors")?.classList.add("active");
+    if (layer === "HEATMAP") document.getElementById("btn-layer-heat")?.classList.add("active");
+    if (layer === "POLLUTION") document.getElementById("btn-layer-pollution")?.classList.add("active");
     if (layer === "RISK") document.getElementById("btn-layer-risk")?.classList.add("active");
+    if (layer === "HOTSPOTS") document.getElementById("btn-layer-hotspots")?.classList.add("active");
     renderMapLayers();
 }
 
 function resetMapView() {
     if (userLeafletMap) {
-        userLeafletMap.setView([13.0827, 80.2707], 13);
-        showToast("Centered to Home Location", "info");
+        userLeafletMap.setView([13.0102, 80.2155], 16);
+        showToast("Centered to Industrial Campus", "info");
     }
 }
 
