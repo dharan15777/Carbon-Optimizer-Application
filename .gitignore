@@ -1,0 +1,88 @@
+# General
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.code-workspace
+
+# Flutter / Dart
+carbonwise-mobile/.dart_tool/
+carbonwise-mobile/.packages
+carbonwise-mobile/.pub-cache/
+carbonwise-mobile/.pub/
+carbonwise-mobile/build/
+carbonwise-mobile/.flutter-plugins
+carbonwise-mobile/.flutter-plugins-dependencies
+carbonwise-mobile/android/.gradle/
+carbonwise-mobile/android/app/build/
+carbonwise-mobile/android/build/
+carbonwise-mobile/ios/Pods/
+carbonwise-mobile/ios/.symlinks/
+carbonwise-mobile/ios/Flutter/
+carbonwise-mobile/ios/Runner.xcodeproj/
+carbonwise-mobile/ios/Runner.xcworkspace/
+carbonwise-mobile/pubspec.lock
+
+# Spring Boot / Java
+carbonwise-backend/target/
+carbonwise-backend/.mvn/
+carbonwise-backend/mvnw
+carbonwise-backend/mvnw.cmd
+carbonwise-backend/*.jar
+carbonwise-backend/*.war
+carbonwise-backend/*.class
+carbonwise-backend/.classpath
+carbonwise-backend/.project
+carbonwise-backend/.settings/
+
+# Python / AI
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+carbonwise-ai/__pycache__/
+carbonwise-ai/*.pyc
+carbonwise-ai/*.pyo
+carbonwise-ai/.env
+carbonwise-ai/venv/
+carbonwise-ai/env/
+carbonwise-ai/*.egg-info/
+carbonwise-ai/dist/
+carbonwise-ai/.pytest_cache/
+carbonwise-ai/models/*.pkl
+carbonwise-ai/models/*.h5
+carbonwise-ai/models/*.joblib
+
+
+# IoT
+carbonwise-iot/esp32/.pio/
+carbonwise-iot/esp32/build/
+carbonwise-iot/esp32/platformio.ini
+
+# Environment & Secrets
+.env
+.env.local
+.env.production
+*.secret
+credentials.json
+
+# Node
+node_modules/
+.npm/
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+
+# Archive (keep web prototype)
+# archive/ is intentionally tracked

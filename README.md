@@ -38,4 +38,19 @@ The complete directory hierarchy, module breakdown, and inter-service communicat
                                      └───────────────────┘
 ```
 
-For the exhaustive file tree and module documentation, view **[STRUCTURE.md](STRUCTURE.md)**.
+---
+
+## 🖥️ Backend Service (`carbonwise-backend/`)
+
+The core backend service is built with **Java 17** and **Spring Boot 3**.
+
+- **API Documentation**: [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+- **Database Schema**: [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) & [sql/schema.sql](carbonwise-backend/sql/schema.sql)
+- **Configuration**: [application.yml](carbonwise-backend/src/main/resources/application.yml)
+
+### Running the Backend
+```bash
+cd carbonwise-backend
+mvn clean spring-boot:run
+```
+Service runs on port `8080` by default.

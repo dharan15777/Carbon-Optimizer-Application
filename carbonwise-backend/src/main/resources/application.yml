@@ -1,0 +1,56 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: carbonwise-backend
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/carbonwise}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
+
+  jpa:
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  secret: ${JWT_SECRET:carbonwise-secret-key-change-in-production-super-long-string-min-256-bits}
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+mqtt:
+  broker: ${MQTT_BROKER:tcp://localhost:1883}
+  client-id: carbonwise-backend
+  topic-prefix: carbonwise/
+
+ai:
+  server-url: ${AI_SERVER_URL:http://localhost:5000}
+
+logging:
+  level:
+    com.carbonwise: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN
+
