@@ -1,0 +1,16 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # Don't fail builds on unused elements; keep them as warnings.
+    unused_element: warning
+    unused_import: warning
+  language:
+    strict-casts: false
+    strict-raw-types: false
+
+linter:
+  rules:
+    avoid_print: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true

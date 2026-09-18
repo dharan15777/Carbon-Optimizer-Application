@@ -111,3 +111,29 @@ cd carbonwise-iot/gateway
 python mqtt_gateway.py
 ```
 Telemetry published to MQTT broker topics: `carbonwise/sensors/+`.
+
+---
+
+## 📱 Mobile Client (`carbonwise-mobile/`)
+
+Cross-platform Flutter application providing real-time consumer dashboards, appliance controls, and municipal grid oversight.
+
+- **Main Entrypoint**: [lib/main.dart](carbonwise-mobile/lib/main.dart)
+- **Screens**: [lib/screens/](carbonwise-mobile/lib/screens/) (Dashboard, Appliances, Maps, Scheduler, Admin, Notifications, Reports)
+- **State Management**: [lib/providers/](carbonwise-mobile/lib/providers/)
+- **Build Guide**: [BUILD.md](carbonwise-mobile/BUILD.md)
+
+### Running the Mobile App
+```bash
+cd carbonwise-mobile
+flutter pub get
+flutter run
+```
+
+---
+
+## ⚙️ Scripts & Automation (`scripts/`, `.github/`)
+
+- **Developer Setup Script**: [scripts/start-dev.sh](scripts/start-dev.sh) (Automated local environment startup)
+- **CI/CD Workflows**: `.github/workflows/build_apk.yml` (Automated Android APK build and test pipeline)
+- **Mobile CI Config**: `carbonwise-mobile/ci/build-apk.yml`

@@ -1,0 +1,77 @@
+# ============================================================================
+# CarbonWise - GitHub Actions workflow to build the Android release APK.
+# ----------------------------------------------------------------------------
+# This file lives OUTSIDE `.github/workflows/` on purpose: the Arena agent's
+# GitHub token does not have the `workflows` permission, so it cannot create
+# files under `.github/workflows/` itself.
+#
+# TO ACTIVATE (one-time, by the repo owner):
+#   git checkout arena/019fa9d1-carbon-wise-tnstartup
+#   mkdir -p .github/workflows
+#   cp carbonwise-mobile/ci/build-apk.yml .github/workflows/build-apk.yml
+#   git add .github/workflows/build-apk.yml
+#   git commit -m "ci: add APK build workflow"
+#   git push
+#
+# After that, every push builds the APK. Download it from the run's
+# "Artifacts" section (named `carbonwise-release-apk`).
+# ============================================================================
+name: Build Android APK
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: stable
+          cache: true
+
+      - name: Show Flutter doctor
+        working-directory: carbonwise-mobile
+        run: flutter doctor -v
+
+      # The repo ships Dart source + pubspec but not the native Android
+      # project. Generate a matching Android platform so the build is
+      # reproducible on any runner / machine.
+      - name: Generate Android platform files
+        working-directory: carbonwise-mobile
+        run: flutter create --platforms=android --org com.carbonwise --project-name carbonwise .
+
+      - name: Install Dart dependencies
+        working-directory: carbonwise-mobile
+        run: flutter pub get
+
+      - name: Build release APK
+        working-directory: carbonwise-mobile
+        run: flutter build apk --release
+
+      - name: Verify APK exists
+        working-directory: carbonwise-mobile
+        run: ls -lh build/app/outputs/flutter-apk/
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: carbonwise-release-apk
+          path: carbonwise-mobile/build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+          retention-days: 30

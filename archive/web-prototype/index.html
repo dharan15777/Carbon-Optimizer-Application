@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonWise - AI Carbon Intelligence Platform</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="app-shell">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-card">
+            <div class="brand">
+                <i data-lucide="leaf" class="logo-icon"></i>
+                <div class="logo-text">
+                    <h2>Carbon<span>Wise</span></h2>
+                    <span class="tag">AI Intelligence v2.0</span>
+                </div>
+            </div>
+            
+            <nav class="nav-links">
+                <button class="nav-btn active" data-tab="tab-overview">
+                    <i data-lucide="activity"></i>
+                    <span>Grid Overview</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-appliances">
+                    <i data-lucide="cpu"></i>
+                    <span>Appliance Scheduler</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-city">
+                    <i data-lucide="map"></i>
+                    <span>City Spatial Grid</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-rewards">
+                    <i data-lucide="award"></i>
+                    <span>Eco Rewards</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-status glass-card">
+                <div class="status-row">
+                    <span class="pulsing-dot green"></span>
+                    <span>AI Kriging Model: Active</span>
+                </div>
+                <div class="status-row">
+                    <span class="pulsing-dot green"></span>
+                    <span>IoT Gateway: Online</span>
+                </div>
+                <div class="status-row">
+                    <i data-lucide="database" class="icon-small"></i>
+                    <span>Tamil Nadu Grid Mix</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Workspace -->
+        <main class="dashboard-workspace">
+            
+            <!-- HEADER -->
+            <header class="app-header glass-card">
+                <div class="header-left">
+                    <h1 id="tabTitle">Grid Overview</h1>
+                    <p id="tabSubtitle">Real-time tracking of carbon intensity, grid mix, and emission optimization indicators.</p>
+                </div>
+                <div class="header-right">
+                    <div class="quick-status">
+                        <span class="lbl">Carbon Level</span>
+                        <span class="val green" id="headerCarbonLabel"><i data-lucide="check-circle"></i> Clean Energy Window</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- TAB 1: GRID OVERVIEW -->
+            <div class="tab-content active" id="tab-overview">
+                <!-- Top Row Metrics -->
+                <div class="metrics-grid">
+                    <!-- Gauge Card -->
+                    <div class="glass-card gauge-card">
+                        <div class="card-glow green-glow"></div>
+                        <h3>Live Carbon Intensity</h3>
+                        <div class="gauge-container">
+                            <svg viewBox="0 0 100 60" class="gauge-svg">
+                                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8" stroke-linecap="round"/>
+                                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#gaugeGradient)" stroke-width="8" stroke-linecap="round" id="gaugeFill" stroke-dasharray="125.6" stroke-dashoffset="125.6"/>
+                                <linearGradient id="gaugeGradient" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stop-color="#00f576"/>
+                                    <stop offset="50%" stop-color="#eab308"/>
+                                    <stop offset="100%" stop-color="#ff3838"/>
+                                </linearGradient>
+                            </svg>
+                            <div class="gauge-readout">
+                                <span class="val" id="liveIntensity">145</span>
+                                <span class="unit">gCO₂/kWh</span>
+                            </div>
+                        </div>
+                        <div class="gauge-meta">
+                            <span class="status green" id="intensityStatusText">Optimal Carbon Mix</span>
+                        </div>
+                    </div>
+
+                    <!-- Grid Mix Card -->
+                    <div class="glass-card mix-card">
+                        <h3>Grid Power Generation Mix</h3>
+                        <div class="mix-bars">
+                            <div class="mix-row">
+                                <div class="mix-label"><span>Solar & Wind</span><span class="val" id="mixSolarWind">45%</span></div>
+                                <div class="mix-track"><div class="mix-fill green" id="mixBarSolarWind" style="width: 45%;"></div></div>
+                            </div>
+                            <div class="mix-row">
+                                <div class="mix-label"><span>Hydroelectric</span><span class="val" id="mixHydro">12%</span></div>
+                                <div class="mix-track"><div class="mix-fill green" id="mixBarHydro" style="width: 12%;"></div></div>
+                            </div>
+                            <div class="mix-row">
+                                <div class="mix-label"><span>Natural Gas</span><span class="val" id="mixGas">28%</span></div>
+                                <div class="mix-track"><div class="mix-fill yellow" id="mixBarGas" style="width: 28%;"></div></div>
+                            </div>
+                            <div class="mix-row">
+                                <div class="mix-label"><span>Coal Power</span><span class="val" id="mixCoal">15%</span></div>
+                                <div class="mix-track"><div class="mix-fill red" id="mixBarCoal" style="width: 15%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clean Alert Bounding Card -->
+                    <div class="glass-card alert-card clean-alert">
+                        <div class="card-glow green-glow"></div>
+                        <div class="alert-icon-box">
+                            <i data-lucide="zap" class="accent-green"></i>
+                        </div>
+                        <h3>Clean Window Forecast</h3>
+                        <p id="forecastDescription">Renewable share is at a peak. The grid is operating on primary solar and hydro mixes. Shift heavy load cycles now.</p>
+                        <div class="action-recommendation">
+                            <strong>Optimal Actions:</strong>
+                            <p id="forecastActionText">✓ EV Charging (Primary)<br>✓ Thermal heating & HVAC pre-run</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Intensity Timeline -->
+                <div class="glass-card timeline-chart-card">
+                    <div class="chart-header">
+                        <h3>Carbon Load Forecast & Window Schedule</h3>
+                        <div class="chart-legends">
+                            <span class="legend"><span class="dot green"></span> Clean Peak</span>
+                            <span class="legend"><span class="dot red"></span> Grid Peak Load</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <svg viewBox="0 0 600 180" class="timeline-svg">
+                            <!-- Lines -->
+                            <line x1="50" y1="20" x2="570" y2="20" stroke="rgba(255,255,255,0.03)"/>
+                            <line x1="50" y1="70" x2="570" y2="70" stroke="rgba(255,255,255,0.03)"/>
+                            <line x1="50" y1="120" x2="570" y2="120" stroke="rgba(255,255,255,0.03)"/>
+                            <line x1="50" y1="150" x2="570" y2="150" stroke="rgba(255,255,255,0.08)"/>
+
+                            <!-- Grid Shading for Clean Energy Window -->
+                            <rect x="250" y="20" width="160" height="130" fill="rgba(0, 245, 118, 0.05)" stroke="rgba(0, 245, 118, 0.15)" stroke-dasharray="3 3"/>
+
+                            <!-- Line Path -->
+                            <path d="M 50 50 C 120 40, 180 120, 250 140 C 300 155, 360 150, 410 110 C 470 60, 500 30, 570 60" 
+                                  fill="none" stroke="url(#timelineGradient)" stroke-width="3" id="timelinePath"/>
+                            <linearGradient id="timelineGradient" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#ff3838"/>
+                                <stop offset="35%" stop-color="#eab308"/>
+                                <stop offset="60%" stop-color="#00f576"/>
+                                <stop offset="80%" stop-color="#eab308"/>
+                                <stop offset="100%" stop-color="#ff3838"/>
+                            </linearGradient>
+
+                            <circle cx="330" cy="150" r="5" fill="#00f576" class="pulsing-node"/>
+
+                            <!-- X Axis labels -->
+                            <text x="50" y="165" fill="#6b7280" font-size="8" text-anchor="middle">12 AM</text>
+                            <text x="136" y="165" fill="#6b7280" font-size="8" text-anchor="middle">4 AM</text>
+                            <text x="222" y="165" fill="#6b7280" font-size="8" text-anchor="middle">8 AM</text>
+                            <text x="308" y="165" fill="#6b7280" font-size="8" text-anchor="middle">12 PM</text>
+                            <text x="394" y="165" fill="#6b7280" font-size="8" text-anchor="middle">4 PM</text>
+                            <text x="480" y="165" fill="#6b7280" font-size="8" text-anchor="middle">8 PM</text>
+                            <text x="566" y="165" fill="#6b7280" font-size="8" text-anchor="middle">12 AM</text>
+
+                            <!-- Y Axis labels -->
+                            <text x="40" y="152" fill="#6b7280" font-size="8" text-anchor="end">0 g</text>
+                            <text x="40" y="122" fill="#6b7280" font-size="8" text-anchor="end">150 g</text>
+                            <text x="40" y="72" fill="#6b7280" font-size="8" text-anchor="end">300 g</text>
+                            <text x="40" y="22" fill="#6b7280" font-size="8" text-anchor="end">450 g</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: APPLIANCE SCHEDULER -->
+            <div class="tab-content" id="tab-appliances">
+                <!-- Controls Header -->
+                <div class="scheduler-master-row glass-card">
+                    <div class="master-meta">
+                        <h3>AI Load-Shifting Automations</h3>
+                        <p>Configure smart home triggers. Turning on toggles permits CarbonWise to reschedule operations to clean energy windows.</p>
+                    </div>
+                    <div class="master-toggle">
+                        <span>Master Smart Automation:</span>
+                        <label class="switch large">
+                            <input type="checkbox" id="masterAutomationToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="appliance-split">
+                    <!-- Appliance List -->
+                    <div class="glass-card appliance-list-pane">
+                        <h3>Connected Devices</h3>
+                        <div class="appliance-grid">
+                            
+                            <!-- EV Charger -->
+                            <div class="appliance-card border-glow-red" id="card-ev">
+                                <div class="card-top">
+                                    <div class="icon-frame"><i data-lucide="car"></i></div>
+                                    <label class="switch">
+                                        <input type="checkbox" class="appliance-toggle" data-device="ev">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="card-info">
+                                    <h4>Electric Vehicle Charger</h4>
+                                    <span class="status-badge red" id="status-ev">Charging Now (Grid Peak)</span>
+                                </div>
+                                <div class="card-details">
+                                    <div class="detail-row"><span>Power Rating:</span> <strong>7.2 kW</strong></div>
+                                    <div class="detail-row"><span>Target Window:</span> <strong id="window-ev">Immediate</strong></div>
+                                </div>
+                            </div>
+
+                            <!-- Heat Pump -->
+                            <div class="appliance-card border-glow-yellow" id="card-hvac">
+                                <div class="card-top">
+                                    <div class="icon-frame"><i data-lucide="thermometer"></i></div>
+                                    <label class="switch">
+                                        <input type="checkbox" class="appliance-toggle" data-device="hvac">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="card-info">
+                                    <h4>Smart Heat Pump</h4>
+                                    <span class="status-badge yellow" id="status-hvac">Active cooling cycle</span>
+                                </div>
+                                <div class="card-details">
+                                    <div class="detail-row"><span>Power Rating:</span> <strong>3.5 kW</strong></div>
+                                    <div class="detail-row"><span>Target Window:</span> <strong id="window-hvac">Manual control</strong></div>
+                                </div>
+                            </div>
+
+                            <!-- Washing Machine -->
+                            <div class="appliance-card border-glow-grey" id="card-laundry">
+                                <div class="card-top">
+                                    <div class="icon-frame"><i data-lucide="wind"></i></div>
+                                    <label class="switch">
+                                        <input type="checkbox" class="appliance-toggle" data-device="laundry">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="card-info">
+                                    <h4>Washing Machine & Dryer</h4>
+                                    <span class="status-badge grey" id="status-laundry">Idle (Standby)</span>
+                                </div>
+                                <div class="card-details">
+                                    <div class="detail-row"><span>Power Rating:</span> <strong>2.0 kW</strong></div>
+                                    <div class="detail-row"><span>Target Window:</span> <strong id="window-laundry">Waiting for delay</strong></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Right pane: Calculator & Stats -->
+                    <div class="glass-card calculator-pane">
+                        <h3>Household Impact Calculator</h3>
+                        <p class="sub">Calculate and forecast annual carbon reductions based on state utility averages.</p>
+                        
+                        <div class="calc-inputs">
+                            <div class="input-row">
+                                <label for="calcState">Utility Grid Region:</label>
+                                <select id="calcState" class="glass-select">
+                                    <option value="tn">Tamil Nadu Grid (High Coal Mix)</option>
+                                    <option value="ka">Karnataka Grid (High Renewables)</option>
+                                    <option value="mh">Maharashtra Grid (Industrial Mix)</option>
+                                </select>
+                            </div>
+                            <div class="input-row">
+                                <label for="calcBill">Monthly Consumption (kWh):</label>
+                                <input type="number" id="calcBill" value="350" class="glass-input">
+                            </div>
+                        </div>
+
+                        <div class="calc-output glass-card">
+                            <div class="output-row">
+                                <span>Estimated Monthly Carbon Footprint:</span>
+                                <strong id="calcBaseCo2">287.0 kg CO₂</strong>
+                            </div>
+                            <div class="output-row highlight">
+                                <span>Projected Saved via CarbonWise:</span>
+                                <strong class="accent-green" id="calcSavedCo2">86.1 kg CO₂ (-30%)</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SMART CITY GRID -->
+            <div class="tab-content" id="tab-city">
+                <div class="city-controls-row glass-card">
+                    <div class="controls-meta">
+                        <h3>B2G Carbon Mapping Grid</h3>
+                        <p>Analyze city emissions. Enable Kriging spatial algorithms to interpolate sparse physical readings across undetected municipal areas.</p>
+                    </div>
+                    <div class="gis-action-buttons">
+                        <button class="action-btn" id="btnOverlayKriging">
+                            <i data-lucide="network"></i>
+                            <span>AI Spatial Interpolation</span>
+                        </button>
+                        <button class="action-btn" id="btnOverlayWind">
+                            <i data-lucide="wind"></i>
+                            <span>Simulate Wind Dispersion</span>
+                        </button>
+                        <button class="action-btn active" id="btnToolBrush">
+                            <i data-lucide="leaf"></i>
+                            <span>Mitigation Planner (Plant Trees)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="city-grid-split">
+                    <!-- Left: Control Telemetry -->
+                    <div class="glass-card telemetry-pane-city">
+                        <h3>Emissions Analytics Panel</h3>
+                        
+                        <div class="telemetry-box">
+                            <div class="tel-item">
+                                <span>Active Sensors (Physical):</span>
+                                <strong class="accent-cyan">4 Nodes</strong>
+                            </div>
+                            <div class="tel-item">
+                                <span>Interpolated Points (AI):</span>
+                                <strong id="lblGisVirtualNodes">--</strong>
+                            </div>
+                            <div class="tel-item">
+                                <span>Detected Hotspots:</span>
+                                <strong class="accent-red" id="lblGisHotspots">--</strong>
+                            </div>
+                            <div class="tel-item">
+                                <span>Mitigation Trees Planted:</span>
+                                <strong class="accent-green" id="lblGisMitigations">0 Cells</strong>
+                            </div>
+                        </div>
+
+                        <div class="glass-card tooltip-detail-card" id="mapTooltipCard">
+                            <h4>Cell Details</h4>
+                            <p id="mapTooltipText">Click on any coordinates on the map grid to run localized sensor telemetry and inspect carbon levels.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right: GIS Map Grid -->
+                    <div class="glass-card map-card-pane">
+                        <div class="map-head">
+                            <h3>High-Resolution Spatial Map (12x12 Grid)</h3>
+                            <div class="map-chips">
+                                <span class="m-chip phys"><span class="dot"></span> Physical Sensor</span>
+                                <span class="m-chip green-zone"><span class="dot"></span> Tree Buffer Zone</span>
+                            </div>
+                        </div>
+                        <div class="gis-map-viewport">
+                            <div class="gis-grid-12" id="cityGisGrid">
+                                <!-- Generated by script (144 cells) -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: ECO REWARDS -->
+            <div class="tab-content" id="tab-rewards">
+                <div class="rewards-dashboard">
+                    <!-- Left pane: Rewards stats & leaderboard -->
+                    <div class="glass-card points-display-card">
+                        <div class="card-glow green-glow"></div>
+                        <h3>Your Carbon Wallet</h3>
+                        <div class="wallet-balance">
+                            <div class="points-circle">
+                                <span class="pts" id="walletPoints">340</span>
+                                <span class="lbl">ECO POINTS</span>
+                            </div>
+                            <div class="balance-details">
+                                <p>Equivalent offsets: <strong class="accent-green">34.0 kg CO₂</strong></p>
+                                <p>Leaderboard rank: <strong class="accent-cyan">#14 (District 6)</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="leaderboard-section">
+                            <h4>District Leaderboard</h4>
+                            <div class="leaderboard-list">
+                                <div class="leaderboard-item">
+                                    <span>🥇 1. Aarav S.</span>
+                                    <strong>890 pts</strong>
+                                </div>
+                                <div class="leaderboard-item">
+                                    <span>🥈 2. Priyanka K.</span>
+                                    <strong>740 pts</strong>
+                                </div>
+                                <div class="leaderboard-item">
+                                    <span>🥉 3. Muhil A. (You)</span>
+                                    <strong>340 pts</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right pane: Offset Store -->
+                    <div class="glass-card store-card">
+                        <h3>Offload Carbon Credits & Rewards</h3>
+                        <p class="sub">Redeem earned points to sponsor community carbon reduction projects or buy smart utility rebates.</p>
+                        
+                        <div class="rewards-store-grid">
+                            <!-- Reward item 1 -->
+                            <div class="store-item glass-card">
+                                <h4>Sponsor 1 Tree Planting</h4>
+                                <span class="price">100 Points</span>
+                                <button class="redeem-btn" data-cost="100">Redeem Offset</button>
+                            </div>
+                            <!-- Reward item 2 -->
+                            <div class="store-item glass-card">
+                                <h4>$5.00 Electric Bill Credit</h4>
+                                <span class="price">250 Points</span>
+                                <button class="redeem-btn" data-cost="250">Redeem Credit</button>
+                            </div>
+                            <!-- Reward item 3 -->
+                            <div class="store-item glass-card">
+                                <h4>Eco Smart Plug (IoT Node)</h4>
+                                <span class="price">500 Points</span>
+                                <button class="redeem-btn" data-cost="500" disabled>500 Points Needed</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
