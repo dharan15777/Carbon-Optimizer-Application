@@ -84,5 +84,8 @@ logs/
 *.db
 *.sqlite
 
+# Binaries
+*.apk
+
 # Archive (keep web prototype)
 # archive/ is intentionally tracked

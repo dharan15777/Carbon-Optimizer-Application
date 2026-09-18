@@ -1,139 +1,225 @@
-# 🌿 Carbon-Optimizer-Application
+# 🌿 CarbonWise – AI Carbon Intelligence Platform
 
-> **AI Carbon Intelligence & Optimization Platform**  
-> Real-time carbon tracking, IoT telemetry ingestion, predictive forecasting, and intelligent appliance load-shifting.
+> **One App, Two Layers** — Empowering consumers and city administrators with real-time carbon intelligence, AI-powered predictions, and smart appliance scheduling.
 
 ---
 
-## 🌳 Project Structure & Architecture
-
-The complete directory hierarchy, module breakdown, and inter-service communication protocols are documented in:
-
-📄 **[STRUCTURE.md](STRUCTURE.md)**
-
-### Quick Architecture Overview
+## 🏗️ Architecture Overview
 
 ```
-                          ┌───────────────────────────┐
-                          │ Carbon Optimizer System   │
-                          └─────────────┬─────────────┘
-                                        │
-      ┌─────────────────────────┼─────────────────────────┐
-      ▼                         ▼                         ▼
-┌──────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│ Mobile App   │       │ Spring Boot API │       │ AI / ML Engine  │
-│ (Flutter/Dart│◄─────►│ (Java 17/REST)  │◄─────►│ (Python/FastAPI)│
-└──────────────┘       └────────┬────────┘       └─────────────────┘
-                                │
-                 ┌──────────────┴──────────────┐
-                 ▼                             ▼
-       ┌──────────────────┐          ┌───────────────────┐
-       │ PostgreSQL (RDBMS│          │ MQTT Broker       │
-       │ & TimescaleDB)   │          │ (EMQX / Mosquitto)│
-       └──────────────────┘          └─────────▲─────────┘
-                                               │
-                                     ┌─────────┴─────────┐
-                                     │ IoT Devices       │
-                                     │ (ESP32 Sensors)   │
-                                     └───────────────────┘
+                        CarbonWise
+                              │
+      ┌───────────────────────┼────────────────────────┐
+      │                       │                        │
+ Android Mobile App      Spring Boot API         AI/ML Server
+      │                       │                        │
+      └───────────────┬───────┴───────────────┬────────┘
+                      │                       │
+                 PostgreSQL             MQTT Broker
+                      │                       │
+             Firebase Cloud          ESP32 / Raspberry Pi
+                      │
+                Google Maps API
 ```
 
 ---
 
-## 🖥️ Backend Service (`carbonwise-backend/`)
+## 📦 Project Structure
 
-The core backend service is built with **Java 17** and **Spring Boot 3**.
-
-- **API Documentation**: [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
-- **Database Schema**: [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) & [sql/schema.sql](carbonwise-backend/sql/schema.sql)
-- **Configuration**: [application.yml](carbonwise-backend/src/main/resources/application.yml)
-
-### Running the Backend
-```bash
-cd carbonwise-backend
-mvn clean spring-boot:run
 ```
-Service runs on port `8080` by default.
+CarbonWise/
+│
+├── 📱 carbonwise-mobile/
+│   ├── core/
+│   ├── models/
+│   ├── providers/
+│   ├── repositories/
+│   ├── services/
+│   ├── widgets/
+│   ├── screens/
+│   ├── routes/
+│   ├── assets/
+│   └── main.dart
+│
+├── 🖥️ carbonwise-backend/
+│   ├── config/
+│   ├── controller/
+│   ├── service/
+│   ├── repository/
+│   ├── entity/
+│   ├── dto/
+│   ├── mapper/
+│   ├── security/
+│   ├── mqtt/
+│   ├── ai/
+│   ├── scheduler/
+│   ├── notification/
+│   ├── websocket/
+│   ├── validation/
+│   ├── utils/
+│   ├── exception/
+│   └── pom.xml
+│
+├── 🤖 carbonwise-ai/
+│   ├── api/
+│   ├── datasets/
+│   ├── preprocessing/
+│   ├── training/
+│   ├── prediction/
+│   ├── recommendation/
+│   ├── models/
+│   ├── saved_models/
+│   ├── evaluation/
+│   └── utils/
+│
+├── 🔌 carbonwise-iot/
+│   ├── esp32/
+│   ├── gateway/
+│   ├── firmware/
+│   ├── mqtt/
+│   └── documentation/
+│
+├── 📄 README.md
+├── 📄 ARCHITECTURE.md
+├── 📄 API_DOCUMENTATION.md
+├── 📄 DATABASE_SCHEMA.md
+├── 📄 DEPLOYMENT.md
+├── 📄 LICENSE
+└── 📄 .gitignore
+```
 
 ---
 
-## 🌐 Web Frontend Dashboard (`frontend/`)
+## 🛠️ Technology Stack
 
-Interactive web monitoring dashboard for live carbon intensity tracking, GIS maps, appliance control, and analytics.
-
-- **Layout & Structure**: [index.html](frontend/index.html)
-- **Styles & Themes**: [styles.css](frontend/styles.css)
-- **Application Logic & API Client**: [app.js](frontend/app.js)
-
-### Running the Frontend
-Simply open `frontend/index.html` in any modern web browser or serve it using a local HTTP server:
-```bash
-npx serve frontend
-# or
-python -m http.server 5500 --directory frontend
-```
-Accessible at `http://localhost:5500`.
-
----
-
-## 🤖 AI / ML Microservice (`carbonwise-ai/`)
-
-FastAPI microservice delivering 24-hour predictive carbon forecasting and smart appliance load-shifting recommendations.
-
-- **API Entrypoint**: [api/app.py](carbonwise-ai/api/app.py)
-- **Prediction Engine**: [prediction/predictor.py](carbonwise-ai/prediction/predictor.py)
-- **Smart Recommender**: [recommendation/recommender.py](carbonwise-ai/recommendation/recommender.py)
-- **Model Training**: [training/train.py](carbonwise-ai/training/train.py)
-
-### Running the AI Service
-```bash
-cd carbonwise-ai
-pip install -r requirements.txt
-uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
-```
-API runs on `http://localhost:8000` with Swagger docs available at `http://localhost:8000/docs`.
+| Layer | Technology |
+|-------|-----------|
+| Mobile App | Flutter |
+| Backend | Spring Boot |
+| Database | PostgreSQL |
+| Authentication | JWT + Spring Security |
+| AI/ML | Python, Scikit-learn, TensorFlow |
+| IoT | ESP32, Raspberry Pi |
+| Communication | MQTT |
+| Maps | Google Maps SDK |
+| Notifications | Firebase Cloud Messaging |
+| Cloud Storage | Firebase Storage |
+| Deployment | Render (Backend), Railway (Database), Firebase |
 
 ---
 
-## 🔌 IoT Sensors & Firmware (`carbonwise-iot/`)
+## 📋 Complete System Modules
 
-Hardware sensor nodes, telemetry gateway, and smart actuator controllers.
-
-- **ESP32 Sensor Node**: [esp32/sensor_node.cpp](carbonwise-iot/esp32/sensor_node.cpp) (Current & voltage sampling over MQTT)
-- **Smart Plug Controller**: [firmware/smart_plug_controller.cpp](carbonwise-iot/firmware/smart_plug_controller.cpp)
-- **EV Charger Controller**: [firmware/ev_charger_controller.cpp](carbonwise-iot/firmware/ev_charger_controller.cpp)
-- **Edge Gateway**: [gateway/mqtt_gateway.py](carbonwise-iot/gateway/mqtt_gateway.py)
-- **Broker & Sensor Documentation**: [documentation/](carbonwise-iot/documentation/) & [mqtt/mqtt_broker_config.md](carbonwise-iot/mqtt/mqtt_broker_config.md)
-
-### Running the MQTT Gateway
-```bash
-cd carbonwise-iot/gateway
-python mqtt_gateway.py
-```
-Telemetry published to MQTT broker topics: `carbonwise/sensors/+`.
+1. **Authentication Module** – Login, Register, OTP, JWT, User Roles
+2. **Consumer Module** – Dashboard, Live Carbon Score, Carbon Forecast, Tips
+3. **Smart Appliance Module** – Add Device, Schedule, AI Scheduling, Device Status
+4. **Carbon Prediction Module** – Live Intensity, 6/12/24h Forecasts, Best Time
+5. **City Monitoring Module** – Sensor Monitoring, CO₂, PM2.5, PM10, Weather
+6. **GIS Module** – Google Maps, Carbon Heatmap, Pollution Heatmap, Route Analysis
+7. **AI Module** – Data Collection, Training, Prediction, Recommendation Engine
+8. **IoT Module** – ESP32, Raspberry Pi, Sensors, MQTT, Device Controller
+9. **Notification Module** – Grid Alerts, Best Charging Time, Weather Alerts
+10. **Reports Module** – Daily/Weekly/Monthly Reports, Carbon Saved, PDF Download
+11. **Admin Module** – User/City/Sensor/Device Management, AI Training, Monitoring
 
 ---
 
-## 📱 Mobile Client (`carbonwise-mobile/`)
+## 🔐 User Roles
 
-Cross-platform Flutter application providing real-time consumer dashboards, appliance controls, and municipal grid oversight.
+| Role | Access |
+|------|--------|
+| Consumer | Dashboard, Appliances, Predictions, Reports, Notifications |
+| City Admin | City Monitoring, GIS, Sensor Management, City Reports |
+| System Admin | Full System Access, User Management, AI Training |
 
-- **Main Entrypoint**: [lib/main.dart](carbonwise-mobile/lib/main.dart)
-- **Screens**: [lib/screens/](carbonwise-mobile/lib/screens/) (Dashboard, Appliances, Maps, Scheduler, Admin, Notifications, Reports)
-- **State Management**: [lib/providers/](carbonwise-mobile/lib/providers/)
-- **Build Guide**: [BUILD.md](carbonwise-mobile/BUILD.md)
+---
 
-### Running the Mobile App
+## 🚀 Development Phases
+
+### Phase 1 – Core Mobile App
+- User authentication (JWT + OTP)
+- Dashboard with live carbon intensity
+- Google Maps integration
+- Basic consumer profile
+
+### Phase 2 – AI
+- Carbon prediction (6–24 hours)
+- Best time recommendation engine
+- Carbon analytics and gap filling
+
+### Phase 3 – IoT
+- ESP32 sensor integration
+- MQTT communication protocol
+- Smart appliance control via MQTT
+
+### Phase 4 – Smart Features
+- Automatic AI scheduling
+- Push notifications (FCM)
+- Reports and analytics (PDF)
+
+### Phase 5 – Production
+- Admin panel (full)
+- Multi-city support
+- Performance optimization
+- Play Store deployment
+
+---
+
+## 🚀 Quick Start
+
+### Mobile App
 ```bash
 cd carbonwise-mobile
 flutter pub get
 flutter run
 ```
 
+### Backend
+The `pom.xml` and Spring Boot Maven plugin are inside `carbonwise-backend`. Always change into that directory before invoking Maven (or use the helper below); running `mvn spring-boot:run` from the repository root causes Maven's `No plugin found for prefix 'spring-boot'` error.
+
+```bash
+cd carbonwise-backend
+mvn spring-boot:run
+# Backend: http://localhost:8080
+```
+
+To start the backend and Flutter frontend together, from the repository root run:
+
+```bash
+./scripts/start-dev.sh
+```
+The helper verifies that port 8080 is listening before starting Flutter. Stop both processes with `Ctrl+C`.
+
+### AI Server
+```bash
+cd carbonwise-ai
+pip install -r requirements.txt
+python api/app.py
+```
+
+### IoT Devices
+```bash
+cd carbonwise-iot
+# Flash ESP32 via Arduino IDE or PlatformIO
+# Run Raspberry Pi gateway
+python gateway/mqtt_gateway.py
+```
+
 ---
 
-## ⚙️ Scripts & Automation (`scripts/`, `.github/`)
+## 📄 Documentation
 
-- **Developer Setup Script**: [scripts/start-dev.sh](scripts/start-dev.sh) (Automated local environment startup)
-- **CI/CD Workflows**: `.github/workflows/build_apk.yml` (Automated Android APK build and test pipeline)
-- **Mobile CI Config**: `carbonwise-mobile/ci/build-apk.yml`
+- [API Documentation](API_DOCUMENTATION.md) – Complete REST API reference
+- [Database Schema](DATABASE_SCHEMA.md) – PostgreSQL table definitions
+- [Deployment Guide](DEPLOYMENT.md) – Production deployment instructions
+- [Architecture](ARCHITECTURE.md) – System architecture overview
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+> Built with "Muhil" for a greener Tamil Nadu

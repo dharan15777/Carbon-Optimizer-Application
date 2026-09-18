@@ -71,7 +71,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = await _authRepository.register(name.trim(), email.trim(), password, role);
+      await _authRepository.register(name.trim(), email.trim(), password, role);
       _isLoading = false;
       _error = null;
       notifyListeners();
