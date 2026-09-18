@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonWise • AI Carbon Intelligence & IoT Platform</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ==================== AUTH SCREEN ==================== -->
+    <div id="auth-screen">
+        <div class="auth-wrapper">
+            <div class="auth-hero">
+                <div class="brand-badge"><i class="fas fa-leaf"></i> CarbonWise Platform</div>
+                <h2>Next-Gen Carbon Intelligence for Smart Grids & Homes</h2>
+                <p>Track real-time grid emissions, predict clean energy windows, and automatically schedule smart appliances to slash your carbon footprint.</p>
+                <div class="hero-stats">
+                    <div class="hero-stat-item">
+                        <span class="hero-stat-val">34%</span>
+                        <span class="hero-stat-lbl">Avg. CO₂ Reduction</span>
+                    </div>
+                    <div class="hero-stat-item">
+                        <span class="hero-stat-val">24/7</span>
+                        <span class="hero-stat-lbl">IoT Grid Monitoring</span>
+                    </div>
+                    <div class="hero-stat-item">
+                        <span class="hero-stat-val">99.4%</span>
+                        <span class="hero-stat-lbl">AI Prediction Accuracy</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <div class="auth-brand-mobile">
+                    <div class="brand-icon"><i class="fas fa-leaf"></i></div>
+                    <h1>CarbonWise</h1>
+                    <p>AI Carbon Intelligence</p>
+                </div>
+
+                <!-- Sign In Form -->
+                <div id="login-form" class="auth-form">
+                    <div class="form-header">
+                        <h2>Welcome back</h2>
+                        <p>Sign in to monitor your carbon intelligence dashboard</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-email"><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="login-email" value="user@carbonwise.com" placeholder="name@domain.com" required>
+                    </div>
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label for="login-password"><i class="fas fa-lock"></i> Password</label>
+                            <a class="forgot-link" onclick="openForgotPassword()">Forgot?</a>
+                        </div>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="login-password" value="password123" placeholder="Enter your password" required>
+                            <button type="button" class="btn-toggle-pass" onclick="togglePasswordVisibility('login-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary btn-block" id="btn-login" onclick="login()">
+                        <span>Sign In</span> <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                    <div class="auth-divider"><span>OR ONE-TAP DEMO ACCESS</span></div>
+
+                    <div class="demo-buttons-grid">
+                        <button type="button" class="btn-demo consumer" onclick="loginAsDemo('CONSUMER')">
+                            <i class="fas fa-user"></i>
+                            <div>
+                                <strong>Consumer Demo</strong>
+                                <small>Home User Dashboard</small>
+                            </div>
+                        </button>
+                        <button type="button" class="btn-demo manager" onclick="loginAsDemo('CITY_ADMIN')">
+                            <i class="fas fa-city"></i>
+                            <div>
+                                <strong>Area Manager</strong>
+                                <small>City Sensor Grid</small>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="auth-switch">
+                        Don't have an account? <a onclick="showRegister()">Create account</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form hidden">
+                    <div class="form-header">
+                        <h2>Create your account</h2>
+                        <p>Join the green energy optimization network</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reg-name"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="reg-name" value="Alex Rivera" placeholder="Alex Rivera" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email"><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="reg-email" value="alex@carbonwise.com" placeholder="name@domain.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password"><i class="fas fa-lock"></i> Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="reg-password" value="password123" placeholder="Create a strong password" required>
+                            <button type="button" class="btn-toggle-pass" onclick="togglePasswordVisibility('reg-password', this)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary btn-block" id="btn-register" onclick="register()">
+                        <span>Create Account</span> <i class="fas fa-user-plus"></i>
+                    </button>
+
+                    <div class="auth-switch">
+                        Already have an account? <a onclick="showLogin()">Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN APPLICATION ==================== -->
+    <div id="app" class="hidden">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="brand" onclick="switchView('dashboard')">
+                    <div class="brand-logo-glow"><i class="fas fa-leaf"></i></div>
+                    <span class="brand-title">CarbonWise</span>
+                    <span class="brand-tag">AI 2.0</span>
+                </div>
+            </div>
+
+            <div class="nav-center">
+                <nav class="nav-tabs" id="nav-tabs">
+                    <!-- Populated dynamically based on user role -->
+                </nav>
+            </div>
+
+            <div class="nav-right">
+                <!-- Live Server Status Indicator -->
+                <div class="live-pill" id="live-indicator">
+                    <span class="pulse-dot"></span>
+                    <span id="live-status-text">LIVE GRID</span>
+                </div>
+
+                <!-- Eco Points Badge -->
+                <div class="eco-points-badge" onclick="switchView('reports')" title="Your Eco Points">
+                    <i class="fas fa-award"></i>
+                    <span id="user-points">340 pts</span>
+                </div>
+
+                <!-- Notifications Button -->
+                <button class="btn-icon-badge" onclick="switchView('notifications')" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge-count" id="notif-badge-count">2</span>
+                </button>
+
+                <!-- User Profile Dropdown / Trigger -->
+                <div class="user-pill" onclick="openProfileModal()">
+                    <div class="avatar-ring">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-pill-text">
+                        <span id="nav-user-name">Alex Rivera</span>
+                        <span id="nav-user-role" class="role-badge">Consumer</span>
+                    </div>
+                </div>
+
+                <!-- Logout Button -->
+                <button class="btn-nav-logout" onclick="logout()" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Viewport -->
+        <main class="main-viewport">
+
+            <!-- ==================== CONSUMER: 1. DASHBOARD VIEW ==================== -->
+            <section id="view-dashboard" class="app-view">
+                <div class="view-header">
+                    <div>
+                        <h1>Good morning, <span id="greeting-name">Alex</span> 👋</h1>
+                        <p class="subtitle">Here is your live household energy and carbon footprint intelligence</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="refreshDashboardData()">
+                            <i class="fas fa-rotate"></i> Refresh
+                        </button>
+                        <button class="btn-primary" onclick="switchView('scheduler')">
+                            <i class="fas fa-bolt"></i> Optimize Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stat Cards Row -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-bolt"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="dash-energy">342 <small>kWh</small></div>
+                            <div class="stat-label">Energy Used this Month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-cloud"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="dash-carbon">118 <small>kg</small></div>
+                            <div class="stat-label">Total CO₂ Footprint</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon cyan"><i class="fas fa-solar-panel"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="dash-renewable">64<small>%</small></div>
+                            <div class="stat-label">Renewable Grid Share</div>
+                        </div>
+                    </div>
+                    <div class="stat-card accent">
+                        <div class="stat-icon yellow"><i class="fas fa-arrow-trend-down"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value text-green">-24<small>%</small></div>
+                            <div class="stat-label">CO₂ vs Last Month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Section: Gauge + Grid Mix + 7-Day Chart -->
+                <div class="grid-dashboard-main">
+                    <!-- Live Gauge Card -->
+                    <div class="card card-gauge">
+                        <div class="card-header">
+                            <h3><i class="fas fa-gauge-high text-green"></i> Live Carbon Intensity</h3>
+                            <span class="badge clean" id="gauge-status-badge">CLEAN GRID</span>
+                        </div>
+                        <div class="gauge-display">
+                            <div class="radial-gauge-container">
+                                <svg class="gauge-svg" viewBox="0 0 200 200">
+                                    <circle class="gauge-bg" cx="100" cy="100" r="80"></circle>
+                                    <circle class="gauge-progress" id="gauge-progress-bar" cx="100" cy="100" r="80" stroke-dasharray="502" stroke-dashoffset="350"></circle>
+                                </svg>
+                                <div class="gauge-center-text">
+                                    <span class="gauge-val" id="gauge-intensity-val">118</span>
+                                    <span class="gauge-unit">gCO₂/kWh</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gauge-footer-tip">
+                            <i class="fas fa-circle-check text-green"></i>
+                            <span>Solar peak active. Shift heavy loads now for lowest emissions.</span>
+                        </div>
+                    </div>
+
+                    <!-- Grid Mix Breakdown -->
+                    <div class="card card-grid-mix">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie text-cyan"></i> Live Grid Fuel Mix</h3>
+                            <span class="card-subtext">Real-time telemetry</span>
+                        </div>
+                        <div class="grid-mix-bars">
+                            <div class="mix-item">
+                                <div class="mix-label-row">
+                                    <span><i class="fas fa-sun text-yellow"></i> Solar &amp; Wind</span>
+                                    <strong id="mix-solar-val">64%</strong>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill green" id="mix-solar-bar" style="width: 64%;"></div></div>
+                            </div>
+                            <div class="mix-item">
+                                <div class="mix-label-row">
+                                    <span><i class="fas fa-water text-cyan"></i> Hydroelectric</span>
+                                    <strong id="mix-hydro-val">12%</strong>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill cyan" id="mix-hydro-bar" style="width: 12%;"></div></div>
+                            </div>
+                            <div class="mix-item">
+                                <div class="mix-label-row">
+                                    <span><i class="fas fa-fire text-yellow"></i> Natural Gas</span>
+                                    <strong id="mix-gas-val">14%</strong>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill yellow" id="mix-gas-bar" style="width: 14%;"></div></div>
+                            </div>
+                            <div class="mix-item">
+                                <div class="mix-label-row">
+                                    <span><i class="fas fa-industry text-red"></i> Coal / Thermal</span>
+                                    <strong id="mix-coal-val">10%</strong>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill red" id="mix-coal-bar" style="width: 10%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7-Day Usage Chart -->
+                    <div class="card card-chart">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-area text-green"></i> 7-Day Energy &amp; Carbon</h3>
+                            <div class="chart-legend-pills">
+                                <span class="legend-pill green"><i class="fas fa-circle"></i> Energy (kWh)</span>
+                                <span class="legend-pill red"><i class="fas fa-circle"></i> Carbon (kg)</span>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="user-energy-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Quick Actions & Appliances Row -->
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-plug text-cyan"></i> Connected Appliances</h3>
+                            <button class="btn-link" onclick="switchView('appliances')">View All</button>
+                        </div>
+                        <div id="dash-appliances-list" class="mini-appliance-list"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-lightbulb text-yellow"></i> Smart AI Insights</h3>
+                        </div>
+                        <div class="recommendations">
+                            <div class="rec-item">
+                                <i class="fas fa-check-circle text-green"></i>
+                                <div>
+                                    <strong>Best EV Charging: 11:00 AM – 2:00 PM</strong>
+                                    <p>Saves 34% carbon vs charging at night</p>
+                                </div>
+                            </div>
+                            <div class="rec-item">
+                                <i class="fas fa-check-circle text-green"></i>
+                                <div>
+                                    <strong>Pre-Cooling Opportunity at 4:30 PM</strong>
+                                    <p>Avoids the 6:00 PM coal-heavy grid peak</p>
+                                </div>
+                            </div>
+                            <div class="rec-item">
+                                <i class="fas fa-check-circle text-green"></i>
+                                <div>
+                                    <strong>Washing Machine Eco-Cycle Ready</strong>
+                                    <p>Run scheduled load during clean solar window</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bell text-red"></i> Recent Grid Alerts</h3>
+                            <button class="btn-link" onclick="switchView('notifications')">See All</button>
+                        </div>
+                        <div class="alerts-list" id="dash-alerts-list">
+                            <div class="alert-item success">
+                                <i class="fas fa-circle-check"></i>
+                                <div>
+                                    <strong>Clean Energy Active</strong>
+                                    <small>Solar generation &gt; 60% of total grid feed</small>
+                                </div>
+                            </div>
+                            <div class="alert-item warning">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <strong>Peak Window Approaching</strong>
+                                    <small>Expected higher intensity from 6:30 PM</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== CONSUMER: 2. INTERACTIVE MAP VIEW ==================== -->
+            <section id="view-maps" class="app-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Carbon GIS &amp; IoT Sensor Network</h1>
+                        <p class="subtitle">Live geographical heatmap of carbon intensity, air quality nodes, and regional risk corridors</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="resetMapView()">
+                            <i class="fas fa-crosshairs"></i> Center My Home
+                        </button>
+                    </div>
+                </div>
+
+                <div class="map-wrapper-card card">
+                    <div class="map-toolbar">
+                        <div class="layer-filter-buttons">
+                            <button class="map-btn active" id="btn-layer-all" onclick="filterMapLayer('ALL')">
+                                <i class="fas fa-layer-group"></i> All Layers
+                            </button>
+                            <button class="map-btn" id="btn-layer-heat" onclick="filterMapLayer('HEATMAP')">
+                                <i class="fas fa-fire-flame-curved text-green"></i> Carbon Heatmap
+                            </button>
+                            <button class="map-btn" id="btn-layer-sensors" onclick="filterMapLayer('SENSORS')">
+                                <i class="fas fa-microchip text-cyan"></i> IoT Sensors
+                            </button>
+                            <button class="map-btn" id="btn-layer-risk" onclick="filterMapLayer('RISK')">
+                                <i class="fas fa-triangle-exclamation text-red"></i> High Risk Zones
+                            </button>
+                        </div>
+                        <div class="map-legend-inline">
+                            <span class="legend-item"><span class="dot green"></span> Clean (&lt;150)</span>
+                            <span class="legend-item"><span class="dot yellow"></span> Moderate (150-300)</span>
+                            <span class="legend-item"><span class="dot red"></span> High (&gt;300)</span>
+                            <span class="legend-item"><span class="dot cyan"></span> IoT Node</span>
+                        </div>
+                    </div>
+
+                    <div id="user-leaflet-map" class="leaflet-map-container"></div>
+                </div>
+
+                <!-- Sensor Telemetry Details Bar -->
+                <div class="card sensor-details-panel" id="sensor-details-panel">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tower-broadcast text-cyan"></i> <span id="selected-sensor-title">Select any sensor on map for live telemetry</span></h3>
+                        <span class="badge" id="selected-sensor-status">STANDBY</span>
+                    </div>
+                    <div class="sensor-readings-grid">
+                        <div class="reading-box">
+                            <span class="box-label">CO₂ Level</span>
+                            <strong class="box-val text-green" id="box-co2">385 ppm</strong>
+                        </div>
+                        <div class="reading-box">
+                            <span class="box-label">PM2.5 AQI</span>
+                            <strong class="box-val text-cyan" id="box-pm25">18 µg/m³</strong>
+                        </div>
+                        <div class="reading-box">
+                            <span class="box-label">Temperature</span>
+                            <strong class="box-val text-yellow" id="box-temp">28.4 °C</strong>
+                        </div>
+                        <div class="reading-box">
+                            <span class="box-label">Grid Intensity</span>
+                            <strong class="box-val text-green" id="box-intensity">118 gCO₂</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== CONSUMER: 3. AI PREDICTIONS VIEW ==================== -->
+            <section id="view-predictions" class="app-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>AI Carbon Forecasting &amp; Optimization</h1>
+                        <p class="subtitle">Machine learning forecasts trained on renewable weather models and grid load trends</p>
+                    </div>
+                    <div class="time-horizon-selector">
+                        <button class="btn-time-tab active" onclick="setPredictionHorizon(6, this)">6 Hours</button>
+                        <button class="btn-time-tab" onclick="setPredictionHorizon(12, this)">12 Hours</button>
+                        <button class="btn-time-tab" onclick="setPredictionHorizon(24, this)">24 Hours</button>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-wand-magic-sparkles text-green"></i> Optimal Operating Windows</h3>
+                            <span class="badge green">AI Recommended</span>
+                        </div>
+                        <div class="optimal-windows-grid">
+                            <div class="window-card green">
+                                <div class="window-icon"><i class="fas fa-car-side"></i></div>
+                                <div>
+                                    <span class="window-title">Best EV Charging Window</span>
+                                    <strong class="window-time" id="pred-charging-time">11:00 AM – 2:00 PM</strong>
+                                    <small>Peak Solar Output • 84% Clean Grid</small>
+                                </div>
+                            </div>
+                            <div class="window-card cyan">
+                                <div class="window-icon"><i class="fas fa-clock"></i></div>
+                                <div>
+                                    <span class="window-title">Best Appliance Operating Window</span>
+                                    <strong class="window-time" id="pred-appliance-time">1:00 PM – 3:30 PM</strong>
+                                    <small>Recommended for Washing Machine &amp; AC</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ai-recommendation-box">
+                            <h4><i class="fas fa-robot text-green"></i> AI Strategy Brief</h4>
+                            <p id="pred-recommendation-text">Shift high wattage loads to the 11:00 AM - 2:00 PM window. Grid carbon intensity is projected to drop below 110 gCO₂/kWh due to peak regional solar farm generation.</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line text-cyan"></i> Carbon Intensity Forecast (<span id="chart-horizon-label">6 Hours</span>)</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="prediction-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== CONSUMER: 4. APPLIANCES VIEW ==================== -->
+            <section id="view-appliances" class="app-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Smart Appliances Management</h1>
+                        <p class="subtitle">Monitor connected smart plugs, EV chargers, and manage load controls</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-primary" onclick="openAddDeviceModal()">
+                            <i class="fas fa-plus"></i> Add New Device
+                        </button>
+                    </div>
+                </div>
+
+                <div class="appliances-grid" id="full-appliances-grid"></div>
+            </section>
+
+            <!-- ==================== CONSUMER: 5. APPLIANCE SCHEDULER VIEW ==================== -->
+            <section id="view-scheduler" class="app-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Eco Automation &amp; Scheduler</h1>
+                        <p class="subtitle">Set automated execution triggers for appliances during the cleanest grid windows</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="openManualScheduleModal()">
+                            <i class="fas fa-calendar-plus"></i> Manual Schedule
+                        </button>
+                        <button class="btn-primary" onclick="openAiScheduleModal()">
+                            <i class="fas fa-wand-magic-sparkles"></i> AI Auto-Pilot Schedule
+                        </button>
+                    </div>
+                </div>
+
+                <div class="banner-clean-energy">
+                    <div class="banner-icon"><i class="fas fa-solar-panel"></i></div>
+                    <div>
+                        <h3>Clean Energy Window Active Right Now</h3>
+                        <p>Solar energy is currently at its highest output for the day. Devices scheduled now run on over 60% renewable energy.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clock-rotate-left text-green"></i> Active Automation Schedules</h3>
+                        <span class="badge green" id="active-schedules-count">2 Active</span>
+                    </div>
+                    <div class="schedules-list" id="schedules-list"></div>
+                </div>
+            </section>
+
+            <!-- ==================== CONSUMER: 6. CARBON REPORTS VIEW ==================== -->
+            <section id="view-reports" class="app-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Carbon Footprint Reports &amp; ESG Analytics</h1>
+                        <p class="subtitle">Comprehensive verified carbon reporting with exportable analytics</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="report-period-tabs">
+                            <button class="btn-period-tab active" onclick="setReportPeriod('daily', this)">Daily</button>
+                            <button class="btn-period-tab" onclick="setReportPeriod('weekly', this)">Weekly</button>
+                            <button class="btn-period-tab" onclick="setReportPeriod('monthly', this)">Monthly</button>
+                        </div>
+                        <button class="btn-primary" onclick="downloadPdfReport()">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-lines text-green"></i> <span id="report-period-title">Monthly</span> Carbon Overview</h3>
+                            <span class="badge green" id="report-saving-badge">-30% CO₂ Reduction</span>
+                        </div>
+                        <div class="report-summary-stats">
+                            <div class="rep-stat-row">
+                                <span>Total Carbon Emitted</span>
+                                <strong class="text-red" id="rep-carbon-used">287.0 kg CO₂</strong>
+                            </div>
+                            <div class="rep-stat-row">
+                                <span>Total Carbon Avoided (Saved)</span>
+                                <strong class="text-green" id="rep-carbon-saved">86.1 kg CO₂</strong>
+                            </div>
+                            <div class="rep-stat-row">
+                                <span>Total Electricity Consumed</span>
+                                <strong class="text-yellow" id="rep-electricity">350 kWh</strong>
+                            </div>
+                            <div class="rep-stat-row">
+                                <span>Renewable Grid Ratio</span>
+                                <strong class="text-cyan" id="rep-renewable">57%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-column text-cyan"></i> Emission Breakdown by Appliance</h3>
+                        </div>
+                        <div class="appliance-stat-table" id="report-appliance-table">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== CONSUMER: 7. NOTIFICATIONS VIEW ==================== -->
+            <section id="view-notifications" class="app-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Notifications &amp; Grid Alerts</h1>
+                        <p class="subtitle">Real-time alerts, prediction recommendations, and automated device status reports</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="markAllNotificationsRead()">
+                            <i class="fas fa-check-double"></i> Mark All as Read
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="notifications-list" id="full-notifications-list"></div>
+                </div>
+            </section>
+
+            <!-- ==================== AREA MANAGER: DASHBOARD VIEW ==================== -->
+            <section id="view-manager" class="app-view hidden">
+                <div class="view-header">
+                    <div>
+                        <h1>Area Manager Smart Grid Hub</h1>
+                        <p class="subtitle">Monitoring <strong class="text-green" id="manager-area-name">Chennai South Sector</strong> • 124 connected smart homes</p>
+                    </div>
+                    <div class="header-actions">
+                        <select class="select-district" id="district-selector" onchange="changeDistrict(this.value)">
+                            <option value="Chennai South">Chennai South (124 Homes)</option>
+                            <option value="Anna Nagar">Anna Nagar North (88 Homes)</option>
+                            <option value="Guindy Industrial">Guindy Industrial (45 Nodes)</option>
+                            <option value="Adyar Green Zone">Adyar Green Zone (110 Homes)</option>
+                        </select>
+                        <button class="btn-primary" onclick="refreshHouses()">
+                            <i class="fas fa-rotate"></i> Refresh Grid
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon cyan"><i class="fas fa-house-signal"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="mgr-homes-count">124</div>
+                            <div class="stat-label">Smart Homes Connected</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-microchip"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="mgr-sensors-count">312</div>
+                            <div class="stat-label">Active IoT Sensors</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon yellow"><i class="fas fa-cloud"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="mgr-carbon-today">8.4k <small>kg</small></div>
+                            <div class="stat-label">Sector CO₂ Footprint Today</div>
+                        </div>
+                    </div>
+                    <div class="stat-card accent">
+                        <div class="stat-icon red"><i class="fas fa-triangle-exclamation"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-value text-red" id="mgr-alerts-count">3</div>
+                            <div class="stat-label">Active Sector Warnings</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-map-location-dot text-cyan"></i> District Sensor Grid</h3>
+                        </div>
+                        <div id="manager-leaflet-map" class="leaflet-map-container"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-column text-green"></i> District Power &amp; Carbon Trends</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="manager-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-network-wired text-green"></i> Live Household Activity Feed</h3>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-house" placeholder="Search house #..." oninput="filterHouses(this.value)">
+                        </div>
+                    </div>
+                    <div id="house-grid" class="house-grid"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Add Device Modal -->
+    <div id="modal-add-device" class="modal hidden">
+        <div class="modal-overlay" onclick="closeModal('modal-add-device')"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fas fa-plug text-green"></i> Add Smart Appliance</h3>
+                <button class="btn-close-modal" onclick="closeModal('modal-add-device')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="handleAddDeviceSubmit(event)">
+                <div class="form-group">
+                    <label>Appliance Name</label>
+                    <input type="text" id="dev-name" placeholder="e.g. Master Bedroom AC" required>
+                </div>
+                <div class="form-group">
+                    <label>Appliance Type</label>
+                    <select id="dev-type" required>
+                        <option value="SMART_PLUG">Smart Plug</option>
+                        <option value="EV_CHARGER">EV Home Charger</option>
+                        <option value="AIR_CONDITIONER">Air Conditioner</option>
+                        <option value="WASHING_MACHINE">Washing Machine</option>
+                        <option value="WATER_HEATER">Water Heater</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Power Rating (kW)</label>
+                    <input type="number" id="dev-power" step="0.1" value="1.5" min="0.1" max="50" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-add-device')">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Appliance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manual Schedule Modal -->
+    <div id="modal-manual-schedule" class="modal hidden">
+        <div class="modal-overlay" onclick="closeModal('modal-manual-schedule')"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus text-cyan"></i> Create Manual Schedule</h3>
+                <button class="btn-close-modal" onclick="closeModal('modal-manual-schedule')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="handleManualScheduleSubmit(event)">
+                <div class="form-group">
+                    <label>Select Target Appliance</label>
+                    <select id="sched-device-select" required></select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" id="sched-start-time" value="13:00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" id="sched-end-time" value="15:30" required>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-manual-schedule')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Schedule Modal -->
+    <div id="modal-ai-schedule" class="modal hidden">
+        <div class="modal-overlay" onclick="closeModal('modal-ai-schedule')"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fas fa-wand-magic-sparkles text-green"></i> AI Eco Optimization</h3>
+                <button class="btn-close-modal" onclick="closeModal('modal-ai-schedule')"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="handleAiScheduleSubmit(event)">
+                <p class="modal-desc">AI will automatically synchronize this appliance to activate during the forecast's lowest carbon intensity window (11:00 AM – 2:00 PM).</p>
+                <div class="form-group">
+                    <label>Select Appliance</label>
+                    <select id="ai-sched-device-select" required></select>
+                </div>
+                <div class="ai-benefit-badge">
+                    <i class="fas fa-leaf text-green"></i>
+                    <span>Estimated Carbon Savings: <strong>~34% reduction</strong></span>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-ai-schedule')">Cancel</button>
+                    <button type="submit" class="btn-primary">Activate AI Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="modal-profile" class="modal hidden">
+        <div class="modal-overlay" onclick="closeModal('modal-profile')"></div>
+        <div class="modal-card profile-card">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-circle text-green"></i> User Profile</h3>
+                <button class="btn-close-modal" onclick="closeModal('modal-profile')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="profile-body">
+                <div class="profile-avatar-large">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 id="prof-name">Alex Rivera</h2>
+                <p class="profile-email" id="prof-email">user@carbonwise.com</p>
+                <div class="profile-role-pill" id="prof-role">Consumer</div>
+
+                <div class="profile-stats-row">
+                    <div><strong>86.1 kg</strong><small>CO₂ Saved</small></div>
+                    <div><strong id="prof-devices-count">4</strong><small>Devices</small></div>
+                    <div><strong>340</strong><small>Eco Points</small></div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn-secondary btn-block" onclick="switchRoleToggle()">
+                        <i class="fas fa-arrows-rotate"></i> Switch to <span id="toggle-role-label">Area Manager</span>
+                    </button>
+                    <button class="btn-logout-full" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -54,3 +54,22 @@ cd carbonwise-backend
 mvn clean spring-boot:run
 ```
 Service runs on port `8080` by default.
+
+---
+
+## 🌐 Web Frontend Dashboard (`frontend/`)
+
+Interactive web monitoring dashboard for live carbon intensity tracking, GIS maps, appliance control, and analytics.
+
+- **Layout & Structure**: [index.html](frontend/index.html)
+- **Styles & Themes**: [styles.css](frontend/styles.css)
+- **Application Logic & API Client**: [app.js](frontend/app.js)
+
+### Running the Frontend
+Simply open `frontend/index.html` in any modern web browser or serve it using a local HTTP server:
+```bash
+npx serve frontend
+# or
+python -m http.server 5500 --directory frontend
+```
+Accessible at `http://localhost:5500`.
