@@ -9,6 +9,7 @@ class AppTheme {
   static const Color backgroundDark = Color(0xFF050914);
   static const Color cardBackground = Color(0xFF0A192F);
   static const Color cardDark = Color(0xFF0A192F);
+  static const Color surfaceDark = Color(0xFF0A192F);
   static const Color cardBorder = Color(0x14FFFFFF);
 
   static ThemeData get darkTheme {

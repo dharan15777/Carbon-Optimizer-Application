@@ -64,4 +64,25 @@ class DeviceProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> toggleDevice(String id) async {
+    final index = _devices.indexWhere((d) => d.id == id);
+    if (index != -1) {
+      final current = _devices[index];
+      _devices[index] = Device(
+        id: current.id,
+        userId: current.userId,
+        name: current.name,
+        type: current.type,
+        powerRating: current.powerRating,
+        isActive: !current.isActive,
+        isScheduled: current.isScheduled,
+        scheduleId: current.scheduleId,
+        customLocation: current.customLocation,
+        createdAt: current.createdAt,
+      );
+      notifyListeners();
+    }
+    return true;
+  }
 }
