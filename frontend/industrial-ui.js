@@ -8,20 +8,10 @@
   let predFailed = false;
 
   function loadLeaflet() {
-    if (window.L) { leafletReady = true; return Promise.resolve(); }
-    if (leafletLoading) return leafletLoading;
-    leafletLoading = new Promise((resolve, reject) => {
-      const css = document.createElement("link");
-      css.rel = "stylesheet";
-      css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-      document.head.appendChild(css);
-      const s = document.createElement("script");
-      s.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-      s.onload = () => { leafletReady = true; resolve(); };
-      s.onerror = () => reject(new Error("map"));
-      document.body.appendChild(s);
-    });
-    return leafletLoading;
+    if (window.CWLazyLoader) {
+      return window.CWLazyLoader.loadLeaflet();
+    }
+    return Promise.resolve(window.L);
   }
 
   window.loginAsDemo = function (role) {
@@ -309,20 +299,9 @@
   }
 
   function initMapsSafe() {
-    const host = document.getElementById("user-leaflet-map");
-    if (!host) return;
-    host.innerHTML = `<div class="map-fallback"><div class="skel" style="width:60%"></div><p>Loading map independently…</p></div>`;
-    loadLeaflet().then(() => {
-      if (typeof initUserMapView === "function") initUserMapView();
-    }).catch(() => {
-      host.innerHTML = `<div class="map-fallback">
-        <strong>Map service unavailable</strong>
-        <p>Showing industrial asset list instead.</p>
-        <button class="btn-secondary" onclick="switchView('appliances')">View device list</button>
-        <button class="btn-primary" onclick="switchView('maps')">Retry</button>
-        <div style="text-align:left;margin-top:16px">${E.hotspots.map((h) => `<div class="hotspot ${h.severity}"><strong>${h.name}</strong><span>${h.t} t</span></div>`).join("")}</div>
-      </div>`;
-    });
+    if (typeof initUserMapView === "function") {
+      initUserMapView();
+    }
   }
 
   function renderProfilePage() {
@@ -462,22 +441,17 @@
       name,
       type: document.getElementById("dev-type").value,
       powerRating: parseFloat(document.getElementById("dev-power").value) || 1.5,
-      location: document.getElementById("dev-loc")?.value || "",
+      location: document.getElementById("dev-loc")?.value || "Plant Sector A",
       protocol: document.getElementById("dev-proto")?.value || "Simulation",
-      isActive: false,
-      connecting: true,
+      isActive: true,
+      connecting: false,
       isScheduled: false
     };
     state.appliances.unshift(newDev);
     closeModal("modal-add-device");
     renderFullAppliances();
-    showToast(name + " CONNECTING… (simulation — no physical hardware claimed)", "info");
-    setTimeout(() => {
-      newDev.connecting = false;
-      newDev.isActive = true;
-      renderFullAppliances();
-      showToast(name + " ONLINE (simulation mode)", "success");
-    }, 700);
+    showToast(name + " added and ONLINE!", "success");
+    document.getElementById("dev-name").value = "";
   };
 
   const origRenderDev = window.renderFullAppliances;

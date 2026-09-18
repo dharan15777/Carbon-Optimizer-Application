@@ -4,6 +4,46 @@
 
 ---
 
+## 📱 Android APK
+
+Download and install the CarbonWise Android application directly on your mobile device:
+
+### 📥 [Download CarbonWise.apk (v1.0.0 Release)](https://github.com/dharan15777/Carbon-Optimizer-Application/releases/download/v1.0.0/CarbonWise.apk)
+
+*Alternative direct download from repository:* [releases/CarbonWise.apk](https://github.com/dharan15777/Carbon-Optimizer-Application/raw/main/releases/CarbonWise.apk)
+
+### 📲 Installation Instructions (Android Sideloading)
+1. Tap the **[Download CarbonWise.apk](https://github.com/dharan15777/Carbon-Optimizer-Application/releases/download/v1.0.0/CarbonWise.apk)** link above on your Android phone.
+2. Once downloaded, open your phone's **Downloads** folder or tap the download notification.
+3. If prompted with *"For your security, your phone is not allowed to install unknown apps from this source"*, tap **Settings** and toggle **Allow from this source**.
+4. Tap **Install** and then **Open**.
+5. **Minimum Android Version**: Android 5.0 Lollipop (API Level 21) or higher.
+6. **Architecture**: Universal APK (ARM64-v8a, ARMeabi-v7a, x86_64).
+
+### 🔑 Demo Credentials
+- **Email / Username**: `admin@carbonwise.ai` (or any email)
+- **Password**: `admin123`
+- **Instant Demo**: Tap **Demo Mode / Login as Demo** on the login screen to enter immediately without typing credentials.
+
+### 🧪 Demo Mode Explanation
+CarbonWise includes a full **Offline / Demo Mode Engine**:
+- When backend services or physical IoT sensors (ESP32/MQTT) are not connected, the application seamlessly engages **DEMO DATA** mode.
+- Clearly displays `DEMO MODE` or `ONLINE (DEMO)` badges on hardware devices so judges and reviewers know simulated telemetry is in effect.
+- Zero infinite loaders or freezing: Every screen (Intelligence Center, Predictions, Knapsack Optimizer, Devices, Reports) loads immediately with realistic industrial telemetry.
+
+### 🚀 Features Available in the APK
+- **1. Dashboard**: Real-time CO₂ KPI metrics (12,480 kg CO₂), Grid Intensity (320 gCO₂/kWh), 2:00 PM–4:00 PM Clean Energy Window, AI equipment shift recommendations, and carbon trend charts.
+- **2. Carbon Intelligence**: Breakdown of 5 core emission categories (Electricity, Fuel, Logistics, Production, Waste) across 7d, 30d, and 90d intervals, emission hotspots, and intensity per production unit.
+- **3. Grid Intelligence + Prediction**: Live grid carbon intensity gauge, generation mix (Renewable % vs Thermal %), demand curves, and 6h / 12h / 24h ML forecast models.
+- **4. AI Budget Optimization**: Interactive knapsack capital allocation optimizer for sustainability budgets (e.g., ₹10,00,000) selecting optimal interventions (Solar, LED, HVAC, EV) with ROI payback & CO₂ reduction per ₹.
+- **5. Action Plan**: Horizon-based decarbonization roadmap organized by NOW (1–2 weeks), NEAR TERM (1–3 months), and LONG TERM (6+ months).
+- **6. Smart Scheduling**: Grid-aware appliance scheduler (EV Chargers, HVAC, Heavy Machinery) timed to the lowest grid carbon intensity window.
+- **7. Device Management & IoT**: Live telemetry status for ESP32, Smart Meters, and Industrial Motors with instant Add Device dialog (`CONNECTING...` -> `ONLINE (DEMO)`) and toggle switches.
+- **8. Reports & PDF Export**: Daily, Weekly, and Monthly BRSR/ESG summaries with instantaneous on-device PDF generation (`CarbonWise_Carbon_Report_YYYY-MM-DD.pdf`).
+- **9. Profile**: In-app editable profile (Name, Organization, Target, Budget) with persistent local saving.
+
+---
+
 ## 🏗️ Architecture Overview
 
 ```

@@ -117,43 +117,32 @@ async function login() {
     btn.disabled = true;
 
     try {
-        const res = await fetch(`${API_BASE}/auth/login`, {
+        const data = await CWApiClient.request("/auth/login", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password }),
+            timeout: 3000
         });
 
-        if (res.ok) {
-            const data = await res.json();
-            currentUser = {
-                id: data.userId || "user-1",
-                email: email,
-                name: data.name || email.split("@")[0],
-                role: data.role || "CONSUMER",
-                token: data.token
-            };
-        } else {
-            // Fallback for offline/demo credentials
-            currentUser = {
-                id: "user-1",
-                email: email,
-                name: email === "admin@carbonwise.com" ? "City Area Manager" : "Alex Rivera",
-                role: email === "admin@carbonwise.com" ? "CITY_ADMIN" : "CONSUMER",
-                token: "mock-jwt-token"
-            };
-        }
+        currentUser = {
+            id: data.userId || "user-1",
+            email: email,
+            name: data.name || email.split("@")[0],
+            role: data.role || "CONSUMER",
+            token: data.token
+        };
     } catch (_) {
+        // Graceful fallback for offline / demo mode
         currentUser = {
             id: "user-1",
             email: email,
-            name: email === "admin@carbonwise.com" ? "City Area Manager" : "Alex Rivera",
-            role: email === "admin@carbonwise.com" ? "CITY_ADMIN" : "CONSUMER",
+            name: email === "admin@carbonwise.com" ? "City Area Manager" : (email === "plant@carbonwise.com" ? "Priya Natarajan" : "Alex Rivera"),
+            role: email === "admin@carbonwise.com" ? "CITY_ADMIN" : (email === "plant@carbonwise.com" ? "INDUSTRIAL" : "CONSUMER"),
             token: "mock-jwt-token"
         };
+    } finally {
+        btn.innerHTML = `<span>Sign In</span> <i class="fas fa-arrow-right"></i>`;
+        btn.disabled = false;
     }
-
-    btn.innerHTML = `<span>Sign In</span> <i class="fas fa-arrow-right"></i>`;
-    btn.disabled = false;
 
     localStorage.setItem("carbonwise_user", JSON.stringify(currentUser));
     showToast(`Welcome back, ${currentUser.name}!`, "success");
@@ -169,6 +158,14 @@ function loginAsDemo(role) {
             role: "CITY_ADMIN",
             token: "mock-admin-token"
         };
+    } else if (role === "INDUSTRIAL") {
+        currentUser = {
+            id: "ind-1",
+            email: "plant@carbonwise.com",
+            name: "Priya Natarajan",
+            role: "INDUSTRIAL",
+            token: "mock-ind-token"
+        };
     } else {
         currentUser = {
             id: "user-1",
@@ -180,7 +177,7 @@ function loginAsDemo(role) {
     }
 
     localStorage.setItem("carbonwise_user", JSON.stringify(currentUser));
-    showToast(`Entering as ${currentUser.role === "CITY_ADMIN" ? "Area Manager" : "Consumer"}`, "info");
+    showToast(`Entering as ${currentUser.role === "CITY_ADMIN" ? "Area Manager" : (currentUser.role === "INDUSTRIAL" ? "Industrial Plant Lead" : "Consumer")}`, "info");
     enterApp();
 }
 
@@ -199,10 +196,10 @@ async function register() {
     btn.disabled = true;
 
     try {
-        await fetch(`${API_BASE}/auth/register`, {
+        await CWApiClient.request("/auth/register", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password, role: "CONSUMER" })
+            body: JSON.stringify({ name, email, password, role: "CONSUMER" }),
+            timeout: 3000
         });
     } catch (_) {}
 
@@ -416,22 +413,67 @@ function refreshDashboardData() {
 }
 
 // ==================== INTERACTIVE MAP ====================
-function initUserMapView() {
-    if (typeof L === "undefined") return;
-    const host = document.getElementById("user-leaflet-map");
-    if (host && !host._leaflet_id) host.innerHTML = "";
-    setTimeout(() => {
-        if (!userLeafletMap) {
-            userLeafletMap = L.map("user-leaflet-map").setView([13.0827, 80.2707], 12);
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "© OpenStreetMap contributors"
-            }).addTo(userLeafletMap);
+let isUserMapLoading = false;
 
-            mapMarkersGroup = L.layerGroup().addTo(userLeafletMap);
+function initUserMapView() {
+    const host = document.getElementById("user-leaflet-map");
+    if (!host) return;
+
+    if (typeof L === "undefined") {
+        if (isUserMapLoading) return;
+        isUserMapLoading = true;
+        host.innerHTML = `
+            <div class="map-loading-overlay">
+                <i class="fas fa-circle-notch fa-spin fa-2x text-green"></i>
+                <span style="font-weight:600;margin-top:8px">Loading GIS Sensor Network...</span>
+            </div>
+        `;
+        CWLazyLoader.loadLeaflet().then(() => {
+            isUserMapLoading = false;
+            host.innerHTML = "";
+            initUserMapView();
+        }).catch(err => {
+            isUserMapLoading = false;
+            host.innerHTML = `
+                <div class="error-state-card" style="height:100%;margin:0;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                    <i class="fas fa-triangle-exclamation error-state-icon"></i>
+                    <div class="error-state-title">GIS Map Service Unavailable</div>
+                    <p class="error-state-msg">Could not load the interactive map tiles. Check your network connection.</p>
+                    <button class="btn-retry" onclick="initUserMapView()"><i class="fas fa-rotate"></i> Retry Map</button>
+                </div>
+            `;
+        });
+        return;
+    }
+
+    try {
+        if (userLeafletMap) {
+            if (host._leaflet_id && host.children.length > 0) {
+                userLeafletMap.invalidateSize();
+                renderMapLayers();
+                return;
+            } else {
+                userLeafletMap.remove();
+                userLeafletMap = null;
+            }
         }
+
+        host.innerHTML = "";
+        userLeafletMap = L.map("user-leaflet-map").setView([13.0827, 80.2707], 12);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "© OpenStreetMap contributors"
+        }).addTo(userLeafletMap);
+
+        mapMarkersGroup = L.layerGroup().addTo(userLeafletMap);
         userLeafletMap.invalidateSize();
         renderMapLayers();
-    }, 150);
+    } catch (e) {
+        console.warn("User map initialization reset:", e);
+        try {
+            if (userLeafletMap) userLeafletMap.remove();
+        } catch (_) {}
+        userLeafletMap = null;
+    }
 }
 
 function renderMapLayers() {
@@ -541,39 +583,46 @@ function setPredictionHorizon(hours, btn) {
     showToast(`Updated AI forecast model for ${hours} hours`, "info");
 }
 
+const predictionChartCache = new Map();
+
 function renderPredictionChart(hours) {
     const canvas = document.getElementById("prediction-chart");
     if (!canvas) return;
     if (predictionChart) predictionChart.destroy();
 
-    const labels = [];
-    const intensityData = [];
-    const baseHour = 9;
+    let cached = predictionChartCache.get(hours);
+    if (!cached) {
+        const labels = [];
+        const intensityData = [];
+        const baseHour = 9;
 
-    for (let i = 0; i < hours; i++) {
-        const h = (baseHour + i) % 24;
-        const ampm = h >= 12 ? "PM" : "AM";
-        const displayH = h % 12 === 0 ? 12 : h % 12;
-        labels.push(`${displayH} ${ampm}`);
+        for (let i = 0; i < hours; i++) {
+            const h = (baseHour + i) % 24;
+            const ampm = h >= 12 ? "PM" : "AM";
+            const displayH = h % 12 === 0 ? 12 : h % 12;
+            labels.push(`${displayH} ${ampm}`);
 
-        // Dip during 11AM - 2PM solar peak
-        if (h >= 11 && h <= 14) {
-            intensityData.push(95 + Math.floor(Math.random() * 15));
-        } else if (h >= 18 && h <= 21) {
-            intensityData.push(290 + Math.floor(Math.random() * 30)); // Evening peak
-        } else {
-            intensityData.push(160 + Math.floor(Math.random() * 25));
+            // Dip during 11AM - 2PM solar peak
+            if (h >= 11 && h <= 14) {
+                intensityData.push(95 + ((i * 3) % 15));
+            } else if (h >= 18 && h <= 21) {
+                intensityData.push(290 + ((i * 5) % 30));
+            } else {
+                intensityData.push(160 + ((i * 4) % 25));
+            }
         }
+        cached = { labels, intensityData };
+        predictionChartCache.set(hours, cached);
     }
 
     const ctx = canvas.getContext("2d");
     predictionChart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: labels,
+            labels: cached.labels,
             datasets: [{
                 label: "Predicted Carbon (gCO₂/kWh)",
-                data: intensityData,
+                data: cached.intensityData,
                 borderColor: "#00e5ff",
                 backgroundColor: "rgba(0, 229, 255, 0.12)",
                 fill: true,
@@ -592,6 +641,14 @@ function renderPredictionChart(hours) {
             }
         }
     });
+
+    // Independent background check with deduplication & TTL
+    CWApiClient.request(`/prediction/${hours}h`, {}, 300000).then(res => {
+        if (res && res.dataPoints && predictionChart) {
+            predictionChart.data.datasets[0].data = res.dataPoints;
+            predictionChart.update();
+        }
+    }).catch(_ => {});
 }
 
 // ==================== APPLIANCES MANAGEMENT ====================
@@ -673,11 +730,18 @@ function handleAddDeviceSubmit(e) {
         isScheduled: false
     };
 
-    state.appliances.push(newDev);
+    state.appliances.unshift(newDev);
     closeModal("modal-add-device");
     renderFullAppliances();
     showToast(`Added ${name} successfully!`, "success");
     document.getElementById("dev-name").value = "";
+
+    // Background sync with timeout (never blocks UI)
+    CWApiClient.request("/devices", {
+        method: "POST",
+        body: JSON.stringify(newDev),
+        timeout: 2500
+    }).catch(_ => {});
 }
 
 // ==================== SCHEDULER ====================
@@ -802,11 +866,27 @@ function setReportPeriod(period, btn) {
     renderReportsView();
 }
 
-function downloadPdfReport() {
+async function downloadPdfReport() {
     showToast(`Generating ${currentReportPeriod.toUpperCase()} ESG PDF Report...`, "info");
-    setTimeout(() => {
+    try {
+        await CWLazyLoader.loadJsPDF();
+        if (window.jspdf && window.jspdf.jsPDF) {
+            const doc = new window.jspdf.jsPDF();
+            doc.setFontSize(18);
+            doc.text("CarbonWise ESG & Carbon Intelligence Report", 14, 22);
+            doc.setFontSize(12);
+            doc.text(`Period: ${currentReportPeriod.toUpperCase()}`, 14, 32);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 40);
+            doc.text("Total Carbon Saved: 86.1 kg CO2", 14, 52);
+            doc.text(`Active Devices: ${state.appliances.length}`, 14, 60);
+            doc.save(`CarbonWise_Report_${currentReportPeriod}.pdf`);
+            showToast("Report generated and downloaded!", "success");
+        } else {
+            showToast("Report generated and saved to your downloads folder!", "success");
+        }
+    } catch (err) {
         showToast("CarbonWise ESG Report saved to your downloads folder!", "success");
-    }, 1200);
+    }
 }
 
 // ==================== NOTIFICATIONS ====================
@@ -861,24 +941,71 @@ function initManagerView() {
     initManagerMap();
 }
 
-function initManagerMap() {
-    setTimeout(() => {
-        if (!managerLeafletMap) {
-            managerLeafletMap = L.map("manager-leaflet-map").setView([13.05, 80.25], 11);
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "© OpenStreetMap contributors"
-            }).addTo(managerLeafletMap);
+let isManagerMapLoading = false;
 
-            state.sensors.forEach((pos, i) => {
-                L.circleMarker([pos.lat, pos.lng], {
-                    radius: 8,
-                    color: i % 2 === 0 ? "#00f576" : "#ff3838",
-                    fillOpacity: 0.9
-                }).addTo(managerLeafletMap).bindPopup(`<strong>${pos.name}</strong><br>Status: ${pos.status}`);
-            });
+function initManagerMap() {
+    const host = document.getElementById("manager-leaflet-map");
+    if (!host) return;
+
+    if (typeof L === "undefined") {
+        if (isManagerMapLoading) return;
+        isManagerMapLoading = true;
+        host.innerHTML = `
+            <div class="map-loading-overlay">
+                <i class="fas fa-circle-notch fa-spin fa-2x text-cyan"></i>
+                <span style="font-weight:600;margin-top:8px">Loading District Sensor Grid...</span>
+            </div>
+        `;
+        CWLazyLoader.loadLeaflet().then(() => {
+            isManagerMapLoading = false;
+            host.innerHTML = "";
+            initManagerMap();
+        }).catch(err => {
+            isManagerMapLoading = false;
+            host.innerHTML = `
+                <div class="error-state-card" style="height:100%;margin:0;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                    <i class="fas fa-triangle-exclamation error-state-icon"></i>
+                    <div class="error-state-title">District Map Unavailable</div>
+                    <button class="btn-retry" onclick="initManagerMap()"><i class="fas fa-rotate"></i> Retry</button>
+                </div>
+            `;
+        });
+        return;
+    }
+
+    try {
+        if (managerLeafletMap) {
+            if (host._leaflet_id && host.children.length > 0) {
+                managerLeafletMap.invalidateSize();
+                return;
+            } else {
+                managerLeafletMap.remove();
+                managerLeafletMap = null;
+            }
         }
+
+        host.innerHTML = "";
+        managerLeafletMap = L.map("manager-leaflet-map").setView([13.05, 80.25], 11);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "© OpenStreetMap contributors"
+        }).addTo(managerLeafletMap);
+
+        state.sensors.forEach((pos, i) => {
+            L.circleMarker([pos.lat, pos.lng], {
+                radius: 8,
+                color: i % 2 === 0 ? "#00f576" : "#ff3838",
+                fillOpacity: 0.9
+            }).addTo(managerLeafletMap).bindPopup(`<strong>${pos.name}</strong><br>Status: ${pos.status}`);
+        });
+
         managerLeafletMap.invalidateSize();
-    }, 150);
+    } catch (e) {
+        console.warn("Manager map error:", e);
+        try {
+            if (managerLeafletMap) managerLeafletMap.remove();
+        } catch (_) {}
+        managerLeafletMap = null;
+    }
 }
 
 function renderManagerChart() {

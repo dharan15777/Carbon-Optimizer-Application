@@ -27,6 +27,7 @@ carbonwise-mobile/ios/.symlinks/
 carbonwise-mobile/ios/Flutter/
 carbonwise-mobile/ios/Runner.xcodeproj/
 carbonwise-mobile/ios/Runner.xcworkspace/
+carbonwise-mobile/android/local.properties
 carbonwise-mobile/pubspec.lock
 
 # Spring Boot / Java
@@ -84,8 +85,10 @@ logs/
 *.db
 *.sqlite
 
-# Binaries
+# Binaries (hosted via GitHub Releases v1.0.0)
 *.apk
+releases/
+release_id.txt
 
 # Archive (keep web prototype)
 # archive/ is intentionally tracked

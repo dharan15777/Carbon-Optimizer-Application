@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/map_provider.dart';
@@ -13,9 +14,27 @@ class MapsScreen extends StatefulWidget {
 }
 
 class _MapsScreenState extends State<MapsScreen> {
-  GoogleMapController? _mapController;
+  final MapController _mapController = MapController();
   String _activeLayer = 'HEATMAP'; // 'HEATMAP', 'POLLUTION', 'SENSORS', 'RISK'
   Map<String, dynamic>? _selectedNode;
+
+  // Demo sensor data for the Chennai area
+  static const List<Map<String, dynamic>> _demoSensors = [
+    {'id': 's1', 'name': 'Ambattur Industrial', 'lat': 13.1143, 'lng': 80.1548, 'co2': 387, 'temp': 31, 'status': 'ONLINE', 'intensity': 280},
+    {'id': 's2', 'name': 'Guindy Sensor Hub', 'lat': 13.0069, 'lng': 80.2205, 'co2': 412, 'temp': 29, 'status': 'ONLINE', 'intensity': 340},
+    {'id': 's3', 'name': 'Anna Nagar Monitor', 'lat': 13.0850, 'lng': 80.2101, 'co2': 362, 'temp': 28, 'status': 'ONLINE', 'intensity': 180},
+    {'id': 's4', 'name': 'Perungudi Tech Park', 'lat': 12.9677, 'lng': 80.2356, 'co2': 445, 'temp': 30, 'status': 'ONLINE', 'intensity': 420},
+    {'id': 's5', 'name': 'Manali Refinery Zone', 'lat': 13.1638, 'lng': 80.2613, 'co2': 520, 'temp': 33, 'status': 'ONLINE', 'intensity': 490},
+    {'id': 's6', 'name': 'Sholinganallur Node', 'lat': 12.9010, 'lng': 80.2279, 'co2': 325, 'temp': 27, 'status': 'ONLINE', 'intensity': 145},
+    {'id': 's7', 'name': 'Padi Junction', 'lat': 13.1204, 'lng': 80.2029, 'co2': 398, 'temp': 30, 'status': 'OFFLINE', 'intensity': 300},
+    {'id': 's8', 'name': 'Velachery Monitor', 'lat': 12.9816, 'lng': 80.2209, 'co2': 355, 'temp': 28, 'status': 'ONLINE', 'intensity': 170},
+  ];
+
+  static const List<Map<String, dynamic>> _demoRiskZones = [
+    {'id': 'r1', 'name': 'Manali Industrial Cluster', 'lat': 13.1638, 'lng': 80.2613, 'radius': 2500.0, 'reason': 'Petroleum refinery — high emission zone'},
+    {'id': 'r2', 'name': 'Perungudi IT Corridor', 'lat': 12.9677, 'lng': 80.2356, 'radius': 1800.0, 'reason': 'Dense traffic & generator exhaust'},
+    {'id': 'r3', 'name': 'Guindy Industrial Estate', 'lat': 13.0069, 'lng': 80.2205, 'radius': 2000.0, 'reason': 'Manufacturing plant emissions'},
+  ];
 
   @override
   void initState() {
@@ -27,192 +46,176 @@ class _MapsScreenState extends State<MapsScreen> {
 
   @override
   void dispose() {
-    _mapController?.dispose();
+    _mapController.dispose();
     super.dispose();
   }
 
-  Set<Marker> _buildMarkers(MapProvider provider) {
-    final markers = <Marker>{};
-
-    if (_activeLayer == 'SENSORS' || _activeLayer == 'HEATMAP') {
-      for (final sensor in provider.sensorLocations) {
-        final lat = (sensor['lat'] as num?)?.toDouble() ?? AppConstants.defaultLat;
-        final lng = (sensor['lng'] as num?)?.toDouble() ?? AppConstants.defaultLng;
-        final id = sensor['id']?.toString() ?? 'sensor';
-
-        markers.add(
-          Marker(
-            markerId: MarkerId(id),
-            position: LatLng(lat, lng),
-            infoWindow: InfoWindow(
-              title: sensor['name']?.toString() ?? 'Sensor Node',
-              snippet: 'CO₂: ${sensor['co2'] ?? 400} ppm • Temp: ${sensor['temp'] ?? 28}°C',
-              onTap: () => setState(() => _selectedNode = sensor),
-            ),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              sensor['status'] == 'ONLINE' ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueOrange,
-            ),
-          ),
-        );
-      }
-    }
-
+  List<Marker> _buildMarkers() {
     if (_activeLayer == 'RISK') {
-      for (final zone in provider.highRiskZones) {
-        final lat = (zone['lat'] as num?)?.toDouble() ?? AppConstants.defaultLat;
-        final lng = (zone['lng'] as num?)?.toDouble() ?? AppConstants.defaultLng;
-        final id = zone['id']?.toString() ?? 'zone';
-
-        markers.add(
-          Marker(
-            markerId: MarkerId(id),
-            position: LatLng(lat, lng),
-            infoWindow: InfoWindow(
-              title: zone['name']?.toString() ?? 'Risk Zone',
-              snippet: zone['reason']?.toString() ?? 'High carbon emission area',
-              onTap: () => setState(() => _selectedNode = zone),
+      return _demoRiskZones.map((zone) {
+        return Marker(
+          point: LatLng((zone['lat'] as num).toDouble(), (zone['lng'] as num).toDouble()),
+          width: 36,
+          height: 36,
+          child: GestureDetector(
+            onTap: () => setState(() => _selectedNode = zone),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.primaryRed.withOpacity(0.85),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+                boxShadow: [BoxShadow(color: AppTheme.primaryRed.withOpacity(0.5), blurRadius: 8)],
+              ),
+              child: const Icon(Icons.warning_rounded, color: Colors.white, size: 18),
             ),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           ),
         );
-      }
+      }).toList();
     }
 
-    return markers;
+    // SENSORS / HEATMAP layer
+    return _demoSensors.map((s) {
+      final intensity = (s['intensity'] as num).toDouble();
+      Color markerColor;
+      if (intensity < AppConstants.carbonCleanThreshold) {
+        markerColor = AppTheme.primaryGreen;
+      } else if (intensity < AppConstants.carbonModerateThreshold) {
+        markerColor = AppTheme.primaryYellow;
+      } else {
+        markerColor = AppTheme.primaryRed;
+      }
+      final isOnline = s['status'] == 'ONLINE';
+
+      return Marker(
+        point: LatLng((s['lat'] as num).toDouble(), (s['lng'] as num).toDouble()),
+        width: 34,
+        height: 34,
+        child: GestureDetector(
+          onTap: () => setState(() => _selectedNode = s),
+          child: Container(
+            decoration: BoxDecoration(
+              color: markerColor.withOpacity(0.9),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+              boxShadow: [BoxShadow(color: markerColor.withOpacity(0.5), blurRadius: 8)],
+            ),
+            child: Icon(
+              isOnline ? Icons.sensors : Icons.sensors_off,
+              color: Colors.white,
+              size: 16,
+            ),
+          ),
+        ),
+      );
+    }).toList();
   }
 
-  Set<Circle> _buildCircles(MapProvider provider) {
-    final circles = <Circle>{};
+  List<CircleMarker> _buildCircles() {
+    if (_activeLayer == 'RISK') {
+      return _demoRiskZones.map((zone) {
+        return CircleMarker(
+          point: LatLng((zone['lat'] as num).toDouble(), (zone['lng'] as num).toDouble()),
+          radius: (zone['radius'] as num).toDouble(),
+          useRadiusInMeter: true,
+          color: AppTheme.primaryRed.withOpacity(0.25),
+          borderColor: AppTheme.primaryRed.withOpacity(0.7),
+          borderStrokeWidth: 2,
+        );
+      }).toList();
+    }
 
     if (_activeLayer == 'HEATMAP') {
-      for (int i = 0; i < provider.heatmapData.length; i++) {
-        final pt = provider.heatmapData[i];
-        final lat = (pt['lat'] as num?)?.toDouble() ?? AppConstants.defaultLat;
-        final lng = (pt['lng'] as num?)?.toDouble() ?? AppConstants.defaultLng;
-        final intensity = (pt['intensity'] as num?)?.toDouble() ?? 150.0;
-        final radius = (pt['radius'] as num?)?.toDouble() ?? 1200.0;
-
+      return _demoSensors.map((s) {
+        final intensity = (s['intensity'] as num).toDouble();
         Color circleColor;
         if (intensity < AppConstants.carbonCleanThreshold) {
-          circleColor = AppTheme.primaryGreen.withOpacity(0.35);
+          circleColor = AppTheme.primaryGreen;
         } else if (intensity < AppConstants.carbonModerateThreshold) {
-          circleColor = AppTheme.primaryYellow.withOpacity(0.35);
+          circleColor = AppTheme.primaryYellow;
         } else {
-          circleColor = AppTheme.primaryRed.withOpacity(0.35);
+          circleColor = AppTheme.primaryRed;
         }
 
-        circles.add(
-          Circle(
-            circleId: CircleId('heat_$i'),
-            center: LatLng(lat, lng),
-            radius: radius,
-            fillColor: circleColor,
-            strokeColor: circleColor.withOpacity(0.8),
-            strokeWidth: 2,
-          ),
+        return CircleMarker(
+          point: LatLng((s['lat'] as num).toDouble(), (s['lng'] as num).toDouble()),
+          radius: 1200,
+          useRadiusInMeter: true,
+          color: circleColor.withOpacity(0.22),
+          borderColor: circleColor.withOpacity(0.55),
+          borderStrokeWidth: 1.5,
         );
-      }
+      }).toList();
     }
 
-    if (_activeLayer == 'RISK') {
-      for (int i = 0; i < provider.highRiskZones.length; i++) {
-        final zone = provider.highRiskZones[i];
-        final lat = (zone['lat'] as num?)?.toDouble() ?? AppConstants.defaultLat;
-        final lng = (zone['lng'] as num?)?.toDouble() ?? AppConstants.defaultLng;
-        final radius = (zone['radius'] as num?)?.toDouble() ?? 2000.0;
-
-        circles.add(
-          Circle(
-            circleId: CircleId('risk_$i'),
-            center: LatLng(lat, lng),
-            radius: radius,
-            fillColor: AppTheme.primaryRed.withOpacity(0.4),
-            strokeColor: AppTheme.primaryRed,
-            strokeWidth: 3,
-          ),
-        );
-      }
-    }
-
-    return circles;
+    return [];
   }
 
   @override
   Widget build(BuildContext context) {
-    final mapProvider = context.watch<MapProvider>();
-    final markers = _buildMarkers(mapProvider);
-    final circles = _buildCircles(mapProvider);
+    final markers = _buildMarkers();
+    final circles = _buildCircles();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Carbon GIS & Heatmap'),
+        backgroundColor: AppTheme.surfaceDark,
+        title: const Row(
+          children: [
+            Icon(Icons.map_outlined, color: AppTheme.primaryGreen, size: 20),
+            SizedBox(width: 8),
+            Text('Carbon GIS & Heatmap'),
+          ],
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.white70),
             onPressed: () => context.read<MapProvider>().fetchAllMapData(),
-            tooltip: 'Refresh Map Data',
+            tooltip: 'Refresh',
           ),
         ],
       ),
       body: Stack(
         children: [
-          // Google Map with safe error boundary
-          GoogleMap(
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(AppConstants.defaultLat, AppConstants.defaultLng),
-              zoom: AppConstants.defaultZoom,
+          // OpenStreetMap (no API key needed)
+          FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              initialCenter: const LatLng(AppConstants.defaultLat, AppConstants.defaultLng),
+              initialZoom: AppConstants.defaultZoom,
             ),
-            markers: markers,
-            circles: circles,
-            onMapCreated: (controller) => _mapController = controller,
-            mapType: MapType.normal,
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.carbonwise_mobile',
+              ),
+              if (circles.isNotEmpty)
+                CircleLayer(circles: circles),
+              MarkerLayer(markers: markers),
+            ],
           ),
 
-          // Layer Control Buttons
+          // Layer Control Buttons (top right)
           Positioned(
             top: 16,
             right: 16,
             child: Column(
               children: [
-                _buildLayerButton(
-                  icon: Icons.thermostat,
-                  label: 'Heatmap',
-                  layerKey: 'HEATMAP',
-                  activeColor: AppTheme.primaryGreen,
-                ),
+                _buildLayerButton(icon: Icons.thermostat, label: 'Heatmap', layerKey: 'HEATMAP', activeColor: AppTheme.primaryGreen),
                 const SizedBox(height: 8),
-                _buildLayerButton(
-                  icon: Icons.air,
-                  label: 'Pollution',
-                  layerKey: 'POLLUTION',
-                  activeColor: AppTheme.primaryYellow,
-                ),
+                _buildLayerButton(icon: Icons.air, label: 'Pollution', layerKey: 'POLLUTION', activeColor: AppTheme.primaryYellow),
                 const SizedBox(height: 8),
-                _buildLayerButton(
-                  icon: Icons.sensors,
-                  label: 'Sensors',
-                  layerKey: 'SENSORS',
-                  activeColor: AppTheme.primaryCyan,
-                ),
+                _buildLayerButton(icon: Icons.sensors, label: 'Sensors', layerKey: 'SENSORS', activeColor: AppTheme.primaryCyan),
                 const SizedBox(height: 8),
-                _buildLayerButton(
-                  icon: Icons.warning,
-                  label: 'Risk Zones',
-                  layerKey: 'RISK',
-                  activeColor: AppTheme.primaryRed,
-                ),
+                _buildLayerButton(icon: Icons.warning, label: 'Risk', layerKey: 'RISK', activeColor: AppTheme.primaryRed),
               ],
             ),
           ),
 
-          // Map Legend
+          // Legend (bottom left)
           Positioned(
             bottom: _selectedNode != null ? 180 : 16,
             left: 16,
             child: Card(
-              color: AppTheme.cardDark.withOpacity(0.92),
+              color: AppTheme.cardDark.withOpacity(0.93),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -225,17 +228,22 @@ class _MapsScreenState extends State<MapsScreen> {
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     const SizedBox(height: 6),
-                    _buildLegend(AppTheme.primaryGreen, 'Clean (<150 gCO₂)'),
-                    _buildLegend(AppTheme.primaryYellow, 'Moderate (150-300)'),
+                    _buildLegend(AppTheme.primaryGreen, 'Clean (<150 gCO₂/kWh)'),
+                    _buildLegend(AppTheme.primaryYellow, 'Moderate (150–300)'),
                     _buildLegend(AppTheme.primaryRed, 'High Risk (>300)'),
-                    _buildLegend(AppTheme.primaryCyan, 'Active Sensor Node'),
+                    _buildLegend(AppTheme.primaryCyan, 'Active Sensor'),
+                    const SizedBox(height: 4),
+                    const Text(
+                      '© OpenStreetMap contributors',
+                      style: TextStyle(fontSize: 8, color: Colors.white38),
+                    ),
                   ],
                 ),
               ),
             ),
           ),
 
-          // Detail Card when marker selected
+          // Selected node detail card (bottom)
           if (_selectedNode != null)
             Positioned(
               bottom: 16,
@@ -267,12 +275,13 @@ class _MapsScreenState extends State<MapsScreen> {
                           children: [
                             Text(
                               _selectedNode!['name']?.toString() ?? 'Selected Node',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              _selectedNode!['reason']?.toString() ??
-                                  'CO₂: ${_selectedNode!['co2'] ?? 400} ppm • Temp: ${_selectedNode!['temp'] ?? 28}°C',
+                              _selectedNode!.containsKey('reason')
+                                  ? _selectedNode!['reason'].toString()
+                                  : 'CO₂: ${_selectedNode!['co2'] ?? 400} ppm  •  Temp: ${_selectedNode!['temp'] ?? 28}°C  •  ${_selectedNode!['status'] ?? 'ONLINE'}',
                               style: const TextStyle(fontSize: 12, color: Colors.white70),
                             ),
                           ],
@@ -300,7 +309,10 @@ class _MapsScreenState extends State<MapsScreen> {
   }) {
     final isActive = _activeLayer == layerKey;
     return GestureDetector(
-      onTap: () => setState(() => _activeLayer = layerKey),
+      onTap: () => setState(() {
+        _activeLayer = layerKey;
+        _selectedNode = null;
+      }),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(

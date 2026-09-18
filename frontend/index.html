@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CarbonWise Industrial • AI Carbon Intelligence</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet CSS loaded on-demand via CWLazyLoader -->
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,7 +63,7 @@
                     <div class="form-group">
                         <div class="label-row">
                             <label for="login-password"><i class="fas fa-lock"></i> Password</label>
-                            <a class="forgot-link" onclick="openForgotPassword()">Forgot?</a>
+                            <a href="javascript:void(0)" class="forgot-link" onclick="openForgotPassword()">Forgot?</a>
                         </div>
                         <div class="password-input-wrapper">
                             <input type="password" id="login-password" value="password123" placeholder="Enter your password" required>
@@ -97,7 +97,7 @@
                     </div>
 
                     <div class="auth-switch">
-                        Don't have an account? <a onclick="showRegister()">Create account</a>
+                        Don't have an account? <a href="javascript:void(0)" onclick="showRegister()">Create account</a>
                     </div>
                 </div>
 
@@ -131,7 +131,7 @@
                     </button>
 
                     <div class="auth-switch">
-                        Already have an account? <a onclick="showLogin()">Sign in</a>
+                        Already have an account? <a href="javascript:void(0)" onclick="showLogin()">Sign in</a>
                     </div>
                 </div>
             </div>
@@ -860,10 +860,10 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Scripts: Performance Optimized & Lazy-Loaded -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="lazy-loader.js"></script>
+    <script src="api-client.js"></script>
     <script src="engine.js"></script>
     <script src="app.js"></script>
     <script src="industrial-ui.js"></script>
