@@ -228,7 +228,7 @@ function enterApp() {
 
     // Update Header Pill
     document.getElementById("nav-user-name").innerText = currentUser.name;
-    document.getElementById("nav-user-role").innerText = currentUser.role === "CITY_ADMIN" ? "Area Manager" : "Consumer";
+    document.getElementById("nav-user-role").innerText = currentUser.role === "CITY_ADMIN" ? "Area Manager" : currentUser.role === "INDUSTRIAL" ? "Industrial" : "Consumer";
     document.getElementById("greeting-name").innerText = currentUser.name.split(" ")[0];
 
     buildNavTabs();
@@ -244,7 +244,16 @@ function buildNavTabs() {
     const navTabs = document.getElementById("nav-tabs");
     navTabs.innerHTML = "";
 
-    if (currentUser.role === "CITY_ADMIN") {
+    if (currentUser.role === "INDUSTRIAL") {
+        navTabs.innerHTML = `
+            <button class="nav-tab-btn active" data-view="dashboard" onclick="switchView('dashboard')"><i class="fas fa-gauge"></i> Dashboard</button>
+            <button class="nav-tab-btn" data-view="predictions" onclick="switchView('predictions')"><i class="fas fa-wand-magic-sparkles"></i> Predict</button>
+            <button class="nav-tab-btn" data-view="optimize" onclick="switchView('optimize')"><i class="fas fa-robot"></i> Optimize</button>
+            <button class="nav-tab-btn" data-view="appliances" onclick="switchView('appliances')"><i class="fas fa-microchip"></i> Devices</button>
+            <button class="nav-tab-btn" data-view="maps" onclick="switchView('maps')"><i class="fas fa-map"></i> GIS</button>
+            <button class="nav-tab-btn" data-view="reports" onclick="switchView('reports')"><i class="fas fa-file-lines"></i> Reports</button>
+        `;
+    } else if (currentUser.role === "CITY_ADMIN") {
         navTabs.innerHTML = `
             <button class="nav-tab-btn active" data-view="manager" onclick="switchView('manager')">
                 <i class="fas fa-city"></i> Area Hub
@@ -408,6 +417,9 @@ function refreshDashboardData() {
 
 // ==================== INTERACTIVE MAP ====================
 function initUserMapView() {
+    if (typeof L === "undefined") return;
+    const host = document.getElementById("user-leaflet-map");
+    if (host && !host._leaflet_id) host.innerHTML = "";
     setTimeout(() => {
         if (!userLeafletMap) {
             userLeafletMap = L.map("user-leaflet-map").setView([13.0827, 80.2707], 12);
@@ -609,7 +621,8 @@ function renderFullAppliances() {
                     <p>${dev.type.replace(/_/g, " ")} • Rated Power</p>
                 </div>
                 <div class="appliance-bottom">
-                    <span class="wattage-tag">${dev.powerRating} kW</span>
+                    <span class="wattage-tag">${dev.powerRating} kW ${dev.connecting ? "· CONNECTING" : ""}</span>
+                    <span class="badge ${dev.connecting ? "yellow" : dev.isActive ? "green" : "cyan"}">${dev.connecting ? "CONNECTING" : dev.isActive ? "ONLINE" : "STANDBY"}</span>
                     <label class="switch-toggle">
                         <input type="checkbox" ${dev.isActive ? "checked" : ""} onchange="toggleApplianceState('${dev.id}', this.checked)">
                         <span class="slider"></span>

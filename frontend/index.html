@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarbonWise • AI Carbon Intelligence & IoT Platform</title>
-    <!-- Leaflet CSS -->
+    <title>CarbonWise Industrial • AI Carbon Intelligence</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +12,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="industrial.css">
 </head>
 <body>
 
@@ -87,11 +87,11 @@
                                 <small>Home User Dashboard</small>
                             </div>
                         </button>
-                        <button type="button" class="btn-demo manager" onclick="loginAsDemo('CITY_ADMIN')">
-                            <i class="fas fa-city"></i>
+                        <button type="button" class="btn-demo manager" onclick="loginAsDemo('INDUSTRIAL')">
+                            <i class="fas fa-industry"></i>
                             <div>
-                                <strong>Area Manager</strong>
-                                <small>City Sensor Grid</small>
+                                <strong>Industrial Demo</strong>
+                                <small>Carbon OS for plants</small>
                             </div>
                         </button>
                     </div>
@@ -146,7 +146,7 @@
                 <div class="brand" onclick="switchView('dashboard')">
                     <div class="brand-logo-glow"><i class="fas fa-leaf"></i></div>
                     <span class="brand-title">CarbonWise</span>
-                    <span class="brand-tag">AI 2.0</span>
+                    <span class="brand-tag">INDUSTRIAL</span>
                 </div>
             </div>
 
@@ -193,7 +193,8 @@
             </div>
         </header>
 
-        <!-- Main Content Viewport -->
+        <div class="app-shell">
+        <aside class="sidebar" id="app-sidebar"></aside>
         <main class="main-viewport">
 
             <!-- ==================== CONSUMER: 1. DASHBOARD VIEW ==================== -->
@@ -719,7 +720,16 @@
                 </div>
             </section>
 
+            <section id="view-intelligence" class="app-view hidden"></section>
+            <section id="view-grid" class="app-view hidden"></section>
+            <section id="view-optimize" class="app-view hidden"></section>
+            <section id="view-plan" class="app-view hidden"></section>
+            <section id="view-profile" class="app-view hidden"></section>
+            <section id="view-device-detail" class="app-view hidden"></section>
+
         </main>
+        </div>
+        <nav class="bottom-nav" id="bottom-nav"></nav>
     </div>
 
     <!-- ==================== MODALS ==================== -->
@@ -825,6 +835,38 @@
                 <button class="btn-close-modal" onclick="closeModal('modal-profile')"><i class="fas fa-times"></i></button>
             </div>
             <div class="profile-body">
+                <div class="profile-avatar-large">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 id="prof-name">Alex Rivera</h2>
+                <p class="profile-email" id="prof-email">user@carbonwise.com</p>
+                <div class="profile-role-pill" id="prof-role">Consumer</div>
+
+                <div class="profile-stats-row">
+                    <div><strong>86.1 kg</strong><small>CO₂ Saved</small></div>
+                    <div><strong id="prof-devices-count">4</strong><small>Devices</small></div>
+                    <div><strong>340</strong><small>Eco Points</small></div>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn-secondary btn-block" onclick="switchRoleToggle()">
+                        <i class="fas fa-arrows-rotate"></i> Switch to <span id="toggle-role-label">Area Manager</span>
+                    </button>
+                    <button class="btn-logout-full" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="engine.js"></script>
+    <script src="app.js"></script>
+    <script src="industrial-ui.js"></script>
+</body>
+</html>>
                 <div class="profile-avatar-large">
                     <i class="fas fa-user"></i>
                 </div>
