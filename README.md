@@ -73,3 +73,22 @@ npx serve frontend
 python -m http.server 5500 --directory frontend
 ```
 Accessible at `http://localhost:5500`.
+
+---
+
+## 🤖 AI / ML Microservice (`carbonwise-ai/`)
+
+FastAPI microservice delivering 24-hour predictive carbon forecasting and smart appliance load-shifting recommendations.
+
+- **API Entrypoint**: [api/app.py](carbonwise-ai/api/app.py)
+- **Prediction Engine**: [prediction/predictor.py](carbonwise-ai/prediction/predictor.py)
+- **Smart Recommender**: [recommendation/recommender.py](carbonwise-ai/recommendation/recommender.py)
+- **Model Training**: [training/train.py](carbonwise-ai/training/train.py)
+
+### Running the AI Service
+```bash
+cd carbonwise-ai
+pip install -r requirements.txt
+uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
+```
+API runs on `http://localhost:8000` with Swagger docs available at `http://localhost:8000/docs`.
