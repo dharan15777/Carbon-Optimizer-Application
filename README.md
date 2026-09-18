@@ -92,3 +92,22 @@ pip install -r requirements.txt
 uvicorn api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 API runs on `http://localhost:8000` with Swagger docs available at `http://localhost:8000/docs`.
+
+---
+
+## 🔌 IoT Sensors & Firmware (`carbonwise-iot/`)
+
+Hardware sensor nodes, telemetry gateway, and smart actuator controllers.
+
+- **ESP32 Sensor Node**: [esp32/sensor_node.cpp](carbonwise-iot/esp32/sensor_node.cpp) (Current & voltage sampling over MQTT)
+- **Smart Plug Controller**: [firmware/smart_plug_controller.cpp](carbonwise-iot/firmware/smart_plug_controller.cpp)
+- **EV Charger Controller**: [firmware/ev_charger_controller.cpp](carbonwise-iot/firmware/ev_charger_controller.cpp)
+- **Edge Gateway**: [gateway/mqtt_gateway.py](carbonwise-iot/gateway/mqtt_gateway.py)
+- **Broker & Sensor Documentation**: [documentation/](carbonwise-iot/documentation/) & [mqtt/mqtt_broker_config.md](carbonwise-iot/mqtt/mqtt_broker_config.md)
+
+### Running the MQTT Gateway
+```bash
+cd carbonwise-iot/gateway
+python mqtt_gateway.py
+```
+Telemetry published to MQTT broker topics: `carbonwise/sensors/+`.
