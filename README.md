@@ -2,42 +2,30 @@
 
 > **Measure Carbon → Predict → Optimize → Reduce**
 
-CarbonWise is an **AI-powered industrial carbon intelligence platform** that helps industries understand their carbon emissions, identify major emission sources, predict future carbon intensity, and choose the best actions to reduce emissions within a limited budget.
+### 🚀 Quick Access
+
+📱 **[Download CarbonWise Android APK](https://github.com/dharan15777/Carbon-Optimizer-Application/releases/download/v1.0.0/CarbonWise.apk)**
+
+📦 **[View GitHub Release – v1.0.0](https://github.com/dharan15777/Carbon-Optimizer-Application/releases/tag/v1.0.0)**
 
 ---
 
-## 🎯 Problem
+## 💡 What is CarbonWise?
 
-Industries produce emissions from different sources such as:
+CarbonWise is an **AI-powered industrial carbon intelligence platform** that helps industries understand their emissions, identify major emission sources, predict future carbon intensity, and select suitable carbon-reduction actions within a limited sustainability budget.
 
-* ⚡ Electricity
-* ⛽ Fuel
-* 🚛 Logistics
-* 🏭 Production
-* ♻️ Waste
-
-Simply calculating total CO₂ is not enough.
-
-Industries need to know:
-
-> **Where are the emissions coming from, what will happen next, and what action should we take?**
-
----
-
-## 💡 Our Solution
-
-CarbonWise converts industrial data into actionable recommendations.
+### Simple idea:
 
 ```text
 Industrial Data
       ↓
-Carbon Calculation
+Carbon Analysis
       ↓
-Find Emission Hotspots
+Find Hotspots
       ↓
 ML Prediction
       ↓
-AI Recommendations
+AI Recommendation
       ↓
 Budget Optimization
       ↓
@@ -46,9 +34,35 @@ Action Plan
 
 ---
 
+## 🎯 Problem
+
+Industries generate carbon emissions from:
+
+* ⚡ Electricity
+* ⛽ Fuel
+* 🚛 Logistics
+* 🏭 Production
+* ♻️ Waste
+
+Knowing the total CO₂ is not enough.
+
+Industries need to know:
+
+**Where are the emissions coming from?**
+
+**What will happen next?**
+
+**What action should we take?**
+
+**How should we use our limited sustainability budget?**
+
+CarbonWise addresses these questions in one platform.
+
+---
+
 ## 🏭 Example
 
-For a plastic manufacturing factory:
+Consider a plastic manufacturing factory:
 
 ```text
 Electricity → 50,000 kWh
@@ -57,96 +71,79 @@ Production  → 100 tonnes
 Budget      → ₹10,00,000
 ```
 
-CarbonWise analyzes the data and identifies the major source of emissions.
+CarbonWise analyzes the data and identifies the major emission sources.
 
 It can then recommend actions such as:
 
-* Shift heavy machines to a lower-carbon time
+* Shift high-energy machines to lower-carbon periods
 * Improve motor efficiency
-* Install solar
 * Optimize HVAC
+* Install solar
 * Reduce unnecessary energy consumption
 
-The system also considers the available sustainability budget and helps select suitable interventions.
+The budget optimizer helps select suitable actions while staying within the available budget.
 
 ---
 
-# 🤖 AI/ML
+## 🤖 AI / ML
 
-CarbonWise uses machine learning to forecast **future grid carbon intensity**.
+CarbonWise uses machine learning to predict **future grid carbon intensity**.
 
 ```text
 Historical Data
       ↓
-Data Preprocessing
+Data Processing
       ↓
 ML Model
       ↓
 6h / 12h / 24h Forecast
       ↓
-Find Lower-Carbon Window
+Lower-Carbon Time Window
       ↓
 Scheduling Recommendation
 ```
 
-### Technologies used
+### Technologies
 
 * **Python** – AI/ML
 * **Pandas** – Data processing
 * **NumPy** – Numerical calculations
-* **Scikit-learn** – Machine learning
-* **Matplotlib** – Data visualization
+* **Scikit-learn** – ML models
+* **Matplotlib** – Visualization
 
 ---
 
-# 💰 Budget Optimization
+## 💰 Budget Optimization
 
-Industries have a limited sustainability budget.
+Industries have limited money for sustainability improvements.
 
 For example:
 
 ```text
-Available Budget
-₹10,00,000
+₹10,00,000 Budget
        ↓
-┌─────────────────┐
-│ Solar           │
-│ Efficient Motor │
-│ HVAC             │
-│ LED              │
-│ EV               │
-└────────┬────────┘
+ ┌───────────────┐
+ │ Solar         │
+ │ Motors        │
+ │ HVAC          │
+ │ LED           │
+ │ EV            │
+ └───────┬───────┘
          ↓
- Optimization
+   Optimization
          ↓
 Recommended Actions
 ```
 
-CarbonWise considers the **cost and expected carbon reduction** of different actions while staying within the available budget.
+CarbonWise considers the **cost and expected CO₂ reduction** of different interventions while respecting the available budget.
 
 ---
 
-# 📱 Android Application
-
-CarbonWise is also available as an Android application.
-
-### 📥 Download APK
-
-**[Download CarbonWise.apk](https://github.com/dharan15777/Carbon-Optimizer-Application/releases/download/v1.0.0/CarbonWise.apk)**
-
-### 🚀 GitHub Release
-
-**[CarbonWise v1.0.0 Release](https://github.com/dharan15777/Carbon-Optimizer-Application/releases/tag/v1.0.0)**
-
----
-
-# 📊 Main Features
+## 📱 Main Features
 
 ### 1. Dashboard
 
-Shows:
-
-* Total CO₂ emissions
+* Total CO₂
 * Energy consumption
 * Carbon intensity
 * Production intensity
@@ -154,27 +151,25 @@ Shows:
 
 ### 2. Carbon Intelligence
 
-Breaks emissions into:
+Emission breakdown:
 
 **Electricity | Fuel | Logistics | Production | Waste**
 
-and identifies major emission hotspots.
+### 3. Grid Intelligence
 
-### 3. Grid Prediction
-
-Provides:
-
-**6-hour | 12-hour | 24-hour**
-
-carbon-intensity forecasts.
+* Current carbon intensity
+* 6-hour forecast
+* 12-hour forecast
+* 24-hour forecast
+* Lower-carbon operating window
 
 ### 4. AI Recommendations
 
-Suggests practical actions based on carbon data and predictions.
+Provides practical recommendations based on industrial carbon data and predictions.
 
 ### 5. Budget Optimizer
 
-Helps allocate a limited sustainability budget among different reduction actions.
+Helps select sustainability interventions within a fixed budget.
 
 ### 6. Smart Scheduling
 
@@ -183,11 +178,11 @@ Recommends better operating times for:
 * Heavy machinery
 * HVAC
 * EV chargers
-* Other flexible loads
+* Flexible industrial loads
 
 ### 7. IoT Monitoring
 
-Designed to connect with:
+Designed for:
 
 * ESP32
 * Smart meters
@@ -196,13 +191,13 @@ Designed to connect with:
 
 ### 8. Reports
 
-Generates daily, weekly and monthly carbon reports.
+Generates carbon and sustainability reports.
 
 ---
 
-# 🏗️ Technology Stack
+## 🏗️ Technology Stack
 
-| Component       | Technology            |
+| Layer           | Technology            |
 | --------------- | --------------------- |
 | Mobile App      | Flutter               |
 | Backend         | Spring Boot           |
@@ -218,96 +213,104 @@ Generates daily, weekly and monthly carbon reports.
 
 ---
 
-# 🔄 How CarbonWise Works
+## 🔄 How It Works
 
 ```text
-        INDUSTRIAL DATA
-               ↓
-      ┌─────────────────┐
-      │ Carbon Analysis │
-      └────────┬────────┘
-               ↓
-       Emission Hotspots
-               ↓
-       ┌───────────────┐
-       │   ML Model    │
-       └───────┬───────┘
-               ↓
-       Future Prediction
-               ↓
-      AI Recommendation
-               ↓
-      Budget Optimization
-               ↓
-        Action Plan
-               ↓
-       Carbon Reduction
+             INDUSTRIAL DATA
+                    ↓
+            Carbon Calculation
+                    ↓
+             Carbon Analysis
+                    ↓
+             Find Hotspots
+                    ↓
+              ML Prediction
+                    ↓
+          AI Recommendation
+                    ↓
+          Budget Optimization
+                    ↓
+             Action Plan
+                    ↓
+             Carbon Reduction
 ```
 
 ---
 
-# 🧪 Hackathon Demo
+## 🧪 Hackathon Demo
 
-The application includes **Demo Mode** with simulated industrial data.
+The APK includes **Demo Mode** with simulated industrial telemetry.
 
-This allows the complete solution to be demonstrated even when physical IoT sensors are not connected.
+This allows the complete workflow to be demonstrated without requiring physical IoT hardware during the presentation.
 
-Demo flow:
+### Demo Flow
 
 ```text
 Login
-  ↓
+ ↓
 Dashboard
-  ↓
-Carbon Hotspot
-  ↓
+ ↓
+Carbon Intelligence
+ ↓
+Emission Hotspot
+ ↓
 ML Prediction
-  ↓
+ ↓
 AI Recommendation
-  ↓
+ ↓
 Budget Optimization
-  ↓
+ ↓
 Action Plan
-  ↓
-PDF Report
+ ↓
+Report
 ```
 
 ---
 
-# 🌱 Impact
+## 🔌 IoT Architecture
 
-CarbonWise can help industries:
-
-* Understand their emissions
-* Find high-emission operations
-* Plan energy usage
-* Make data-driven sustainability decisions
-* Use sustainability budgets efficiently
-* Track carbon reduction
+```text
+ESP32 / Smart Meter
+        ↓
+       MQTT
+        ↓
+ Raspberry Pi / Gateway
+        ↓
+ Spring Boot Backend
+        ↓
+ PostgreSQL
+        ↓
+ Flutter Application
+```
 
 ---
 
-# 🔮 Future Scope
+## 🌱 Impact
+
+CarbonWise helps industries:
+
+* Understand where emissions originate
+* Identify high-emission operations
+* Predict future carbon intensity
+* Plan energy usage
+* Optimize sustainability investments
+* Track carbon-reduction actions
+
+---
+
+## 🔮 Future Scope
 
 * Real-time industrial IoT integration
-* More advanced ML forecasting
 * Automated machine scheduling
 * Multi-factory monitoring
 * Advanced ESG/BRSR reporting
+* More advanced ML forecasting
 * Enterprise sustainability management
 
 ---
 
-# 👥 Team
-
-**CarbonWise Team**
-
-Built using **AI/ML + Software + IoT** to create a practical industrial sustainability solution.
-
----
-
-## 🌿 CarbonWise
-
-### **Measure → Predict → Optimize → Reduce**
+# 🌿 CarbonWise
 
 > **Turning industrial carbon data into actionable decisions.**
+
+### **Measure → Predict → Optimize → Reduce**
