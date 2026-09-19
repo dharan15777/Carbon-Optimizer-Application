@@ -1,5 +1,6 @@
 import '../services/api_service.dart';
 import '../models/carbon_intensity_model.dart';
+import '../services/grid_simulation_service.dart';
 
 class CarbonRepository {
   final ApiService _apiService;
