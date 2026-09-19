@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
@@ -140,7 +141,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
+  String _getTargetRoute(CarbonNotification notif) {
+    final t = notif.title.toUpperCase();
+    if (t.contains('GRID') || t.contains('WINDOW')) return '/scheduler';
+    if (t.contains('MACHINE') || t.contains('FURNACE') || t.contains('DEVICE')) return '/appliances';
+    if (t.contains('AIR QUALITY') || t.contains('PM2.5') || t.contains('POLLUTION')) return '/maps';
+    if (t.contains('OPTIMIZATION')) return '/dashboard';
+    if (t.contains('REPORT')) return '/reports';
+    return '/dashboard';
+  }
+
   void _showNotificationDetail(CarbonNotification notification) {
+    final targetRoute = _getTargetRoute(notification);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: AppTheme.cardDark,
@@ -158,20 +171,35 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 Expanded(
                   child: Text(
                     notification.title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            Text(notification.message, style: const TextStyle(fontSize: 14, color: Colors.white70)),
+            const SizedBox(height: 14),
+            Text(notification.message, style: const TextStyle(fontSize: 13.5, color: Colors.white70)),
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Close'),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('Dismiss'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryGreen),
+                    icon: const Icon(Icons.arrow_forward, color: AppTheme.backgroundDark, size: 16),
+                    label: const Text('OPEN SCREEN', style: TextStyle(color: AppTheme.backgroundDark, fontWeight: FontWeight.bold)),
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      context.go(targetRoute);
+                    },
+                  ),
+                ),
+              ],
             ),
           ],
         ),

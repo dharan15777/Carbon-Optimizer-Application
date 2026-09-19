@@ -29,9 +29,9 @@ class ApiService {
     final effectiveBase = _normalizeBaseUrl(customBaseUrl ?? AppConstants.baseUrl);
     _dio = Dio(BaseOptions(
       baseUrl: effectiveBase,
-      connectTimeout: const Duration(seconds: 45),
-      receiveTimeout: const Duration(seconds: 45),
-      sendTimeout: const Duration(seconds: 45),
+      connectTimeout: const Duration(seconds: 4),
+      receiveTimeout: const Duration(seconds: 4),
+      sendTimeout: const Duration(seconds: 4),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

@@ -21,6 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late TextEditingController _roleController;
   late TextEditingController _locationController;
   late TextEditingController _industryController;
+  late TextEditingController _orgSizeController;
   late TextEditingController _targetController;
   late TextEditingController _budgetController;
 
@@ -40,8 +41,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _roleController = TextEditingController(text: auth.user?.role ?? 'Chief Sustainability Officer (CSO)');
     _locationController = TextEditingController(text: 'SIPCOT Industrial Park, Chennai');
     _industryController = TextEditingController(text: 'Automotive & Heavy Metallurgy');
+    _orgSizeController = TextEditingController(text: '2,400 Employees • 4 Manufacturing Plants');
     _targetController = TextEditingController(text: '25% Net Scope 1 & 2 Reduction by FY27');
-    _budgetController = TextEditingController(text: '₹1,10,00,000 / month');
+    _budgetController = TextEditingController(text: '₹10,00,000 / month');
   }
 
   @override
@@ -53,6 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _roleController.dispose();
     _locationController.dispose();
     _industryController.dispose();
+    _orgSizeController.dispose();
     _targetController.dispose();
     _budgetController.dispose();
     super.dispose();
@@ -202,6 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 14),
           _buildFieldRow('Enterprise Name', _orgController),
           _buildFieldRow('Industrial Sector', _industryController),
+          _buildFieldRow('Organization Size', _orgSizeController),
           _buildFieldRow('Facility Location', _locationController),
           _buildFieldRow('Official Phone', _phoneController),
         ],
@@ -370,7 +374,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           )
-        else
+        else ...[
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryGreen,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              icon: const Icon(Icons.edit, color: AppTheme.backgroundDark, size: 18),
+              label: const Text('EDIT ENTERPRISE PROFILE', style: TextStyle(color: AppTheme.backgroundDark, fontWeight: FontWeight.bold, letterSpacing: 0.6)),
+              onPressed: () => setState(() => _isEditing = true),
+            ),
+          ),
+          const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -387,6 +405,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
           ),
+        ],
       ],
     );
   }

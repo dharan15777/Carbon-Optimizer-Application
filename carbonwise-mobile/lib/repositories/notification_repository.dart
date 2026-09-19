@@ -8,35 +8,53 @@ class NotificationRepository {
     CarbonNotification(
       id: 'notif-1',
       userId: 'user-1',
-      title: 'Optimal Green Charging Active',
-      message: 'Grid carbon intensity is currently low (118 gCO₂/kWh). Excellent time to charge EV.',
-      type: AppConstants.notifGridClean,
+      title: 'HIGH CARBON GRID ALERT',
+      message: 'Grid intensity reached 642 g CO₂/kWh. Defer non-critical heating cycles.',
+      type: AppConstants.notifGridDirty,
       isRead: false,
-      createdAt: DateTime.now().subtract(const Duration(minutes: 25)),
+      createdAt: DateTime.now().subtract(const Duration(minutes: 12)),
     ),
     CarbonNotification(
       id: 'notif-2',
       userId: 'user-1',
-      title: 'AI Scheduled Smart Cycle',
-      message: 'Smart Washing Machine scheduled for 1:30 PM today during peak renewable window.',
-      type: AppConstants.notifBestCharging,
+      title: 'CLEAN ENERGY WINDOW',
+      message: 'Grid intensity dropped below 350 g CO₂/kWh. Solar peak active now.',
+      type: AppConstants.notifGridClean,
       isRead: false,
-      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+      createdAt: DateTime.now().subtract(const Duration(minutes: 45)),
     ),
     CarbonNotification(
       id: 'notif-3',
       userId: 'user-1',
-      title: 'Air Quality Normal',
-      message: 'All localized IoT environmental sensors are online and within clean thresholds.',
+      title: 'MACHINE RISK',
+      message: 'Industrial Furnace temperature exceeded safe operating threshold (840°C).',
       type: AppConstants.notifDeviceCompleted,
-      isRead: true,
-      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+      isRead: false,
+      createdAt: DateTime.now().subtract(const Duration(hours: 1, minutes: 20)),
     ),
     CarbonNotification(
       id: 'notif-4',
       userId: 'user-1',
-      title: 'Daily Carbon Savings Report Ready',
-      message: 'You reduced your carbon footprint by 30% yesterday. View your full report now.',
+      title: 'AIR QUALITY WARNING',
+      message: 'PM2.5 exceeded 75 µg/m³ in Machining Hall Bay 1. Exhaust fan boost active.',
+      type: AppConstants.notifHighPollution,
+      isRead: false,
+      createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+    ),
+    CarbonNotification(
+      id: 'notif-5',
+      userId: 'user-1',
+      title: 'OPTIMIZATION COMPLETE',
+      message: '₹8.4L investment can reduce estimated annual emissions by 18.6% (142 t CO₂).',
+      type: AppConstants.notifBestCharging,
+      isRead: true,
+      createdAt: DateTime.now().subtract(const Duration(hours: 6)),
+    ),
+    CarbonNotification(
+      id: 'notif-6',
+      userId: 'user-1',
+      title: 'REPORT READY',
+      message: 'Monthly carbon audit report is ready for download in standard PDF format.',
       type: AppConstants.notifDailyReport,
       isRead: true,
       createdAt: DateTime.now().subtract(const Duration(days: 1)),
@@ -79,22 +97,19 @@ class NotificationRepository {
   }
 
   Future<void> markAllAsRead() async {
-    for (int i = 0; i < _localNotifications.length; i++) {
-      final existing = _localNotifications[i];
-      _localNotifications[i] = CarbonNotification(
-        id: existing.id,
-        userId: existing.userId,
-        title: existing.title,
-        message: existing.message,
-        type: existing.type,
-        isRead: true,
-        createdAt: existing.createdAt,
-      );
-    }
-  }
-
-  Future<int> fetchUnreadCount() async {
-    final notifications = await fetchNotifications();
-    return notifications.where((n) => !n.isRead).length;
+    try {
+      await _apiService.put('/api/notifications/read-all');
+    } catch (_) {}
+    _localNotifications = _localNotifications
+        .map((n) => CarbonNotification(
+              id: n.id,
+              userId: n.userId,
+              title: n.title,
+              message: n.message,
+              type: n.type,
+              isRead: true,
+              createdAt: n.createdAt,
+            ))
+        .toList();
   }
 }

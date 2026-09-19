@@ -48,7 +48,6 @@ class GridSimulationService extends ChangeNotifier {
           final parts = line.split(',');
           if (parts.length >= 8) {
             final intensity = double.tryParse(parts[1]) ?? 400.0;
-            final renewable = double.tryParse(parts[2]) ?? 45.0;
             final solar = double.tryParse(parts[4]) ?? 20.0;
             final wind = double.tryParse(parts[5]) ?? 10.0;
             final hydro = double.tryParse(parts[6]) ?? 6.0;

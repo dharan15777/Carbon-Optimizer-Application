@@ -54,13 +54,58 @@ class SensorData {
 
   factory SensorData.fromJson(Map<String, dynamic> json) {
     return SensorData(
-      sensorId: json['sensorId'],
-      co2: (json['co2'] as num).toDouble(),
-      pm25: (json['pm25'] as num).toDouble(),
-      pm10: (json['pm10'] as num).toDouble(),
-      temperature: (json['temperature'] as num).toDouble(),
-      humidity: (json['humidity'] as num).toDouble(),
-      timestamp: DateTime.parse(json['timestamp']),
+      sensorId: json['sensorId'] ?? '',
+      co2: (json['co2'] as num?)?.toDouble() ?? 400.0,
+      pm25: (json['pm25'] as num?)?.toDouble() ?? 25.0,
+      pm10: (json['pm10'] as num?)?.toDouble() ?? 45.0,
+      temperature: (json['temperature'] as num?)?.toDouble() ?? 28.0,
+      humidity: (json['humidity'] as num?)?.toDouble() ?? 50.0,
+      timestamp: json['timestamp'] != null ? DateTime.parse(json['timestamp']) : DateTime.now(),
     );
   }
 }
+
+class IndustrialSensor {
+  final String id;
+  final String name;
+  final String parameter;
+  final double value;
+  final String unit;
+  final String location;
+  final String status; // NORMAL, WARNING, CRITICAL
+  final String threshold;
+  final String reason;
+  final double latitude;
+  final double longitude;
+
+  const IndustrialSensor({
+    required this.id,
+    required this.name,
+    required this.parameter,
+    required this.value,
+    required this.unit,
+    required this.location,
+    required this.status,
+    required this.threshold,
+    required this.reason,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory IndustrialSensor.fromJson(Map<String, dynamic> json) {
+    return IndustrialSensor(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      parameter: json['parameter'] ?? '',
+      value: (json['value'] as num?)?.toDouble() ?? 0.0,
+      unit: json['unit'] ?? '',
+      location: json['location'] ?? '',
+      status: json['status'] ?? 'NORMAL',
+      threshold: json['threshold'] ?? '',
+      reason: json['reason'] ?? '',
+      latitude: (json['latitude'] as num?)?.toDouble() ?? 13.0827,
+      longitude: (json['longitude'] as num?)?.toDouble() ?? 80.2707,
+    );
+  }
+}
+

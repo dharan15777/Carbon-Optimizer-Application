@@ -17,6 +17,8 @@ class Device {
   final double? runtimeHours;
   final String? riskLevel;
 
+  final String? customStatus;
+
   double get power => powerRating;
   double get liveKw => currentPower ?? (isActive ? powerRating * 0.78 : 0.0);
   double get liveKwh => energyToday ?? (isActive ? powerRating * 5.2 : 0.0);
@@ -26,7 +28,7 @@ class Device {
   double get runtime => runtimeHours ?? (isActive ? 6.4 : 0.0);
   String get risk => riskLevel ?? (temp > 75 || vib > 4.0 ? 'HIGH' : 'LOW');
   bool get isOn => isActive;
-  String get status => isActive ? 'ONLINE' : 'OFFLINE';
+  String get status => customStatus ?? (isActive ? 'ONLINE' : 'OFFLINE');
   String get location => customLocation ?? 'Sector 3 • Bay A';
 
   Device({
@@ -46,20 +48,30 @@ class Device {
     this.vibration,
     this.runtimeHours,
     this.riskLevel,
+    this.customStatus,
     required this.createdAt,
   });
 
   factory Device.fromJson(Map<String, dynamic> json) {
     return Device(
-      id: json['id'],
-      userId: json['userId'],
-      name: json['name'],
-      type: json['type'],
-      powerRating: (json['powerRating'] as num).toDouble(),
+      id: json['id'] ?? '',
+      userId: json['userId'] ?? '',
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
+      powerRating: (json['powerRating'] as num?)?.toDouble() ?? 15.0,
       isActive: json['isActive'] ?? false,
       isScheduled: json['isScheduled'] ?? false,
       scheduleId: json['scheduleId'],
-      createdAt: DateTime.parse(json['createdAt']),
+      customLocation: json['location'] ?? json['customLocation'],
+      currentPower: (json['currentPower'] as num?)?.toDouble(),
+      energyToday: (json['energyToday'] as num?)?.toDouble(),
+      carbonKg: (json['carbonKg'] as num?)?.toDouble(),
+      temperature: (json['temperature'] as num?)?.toDouble(),
+      vibration: (json['vibration'] as num?)?.toDouble(),
+      runtimeHours: (json['runtimeHours'] as num?)?.toDouble(),
+      riskLevel: json['riskLevel'],
+      customStatus: json['status'],
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
     );
   }
 
